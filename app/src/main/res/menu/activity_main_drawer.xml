@@ -3,35 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_notice"
+            android:icon="@drawable/ic_bookmark_black_48dp"
+            android:title="공지사항" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_write"
+            android:icon="@drawable/ic_chat_black_48dp"
+            android:title="메시지 작성"/>
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/nav_send"
+            android:icon="@drawable/ic_accessibility_black_48dp"
+            android:title="보낸 메시지"/>
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_receive"
+            android:icon="@drawable/ic_menu_black_48dp"
+            android:title="받은 메시지" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="설정">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_setting"
+                android:icon="@drawable/ic_settings_black_48dp"
+                android:title="설정" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_keyboard_return_black_48dp"
+                android:title="로그아웃" />
         </menu>
     </item>
 
