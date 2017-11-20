@@ -1,6 +1,7 @@
 package kr.co.timecapsule;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,23 +11,23 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-public class WriteActivity extends AppCompatActivity
+public class MyInfoActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_write);
+        setContentView(R.layout.activity_my_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_write);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_myinfo);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_write);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_myinfo);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -53,7 +54,9 @@ public class WriteActivity extends AppCompatActivity
             intent = new Intent(this, CheckMessageActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_write) {
-
+            intent = new Intent(this, WriteActivity.class);
+            startActivity(intent);
+            finish();
         } else if (id == R.id.nav_send) {
             intent = new Intent(this, CheckMessageActivity.class);
             startActivity(intent);
@@ -65,12 +68,9 @@ public class WriteActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 
         } else if (id == R.id.nav_header) {
-            intent = new Intent(this, MyInfoActivity.class);
-            startActivity(intent);
-            finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_write);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_myinfo);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

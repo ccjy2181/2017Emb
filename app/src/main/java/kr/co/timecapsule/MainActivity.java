@@ -21,19 +21,19 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_main);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_main);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_main);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -69,30 +69,33 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Intent intent;
 
-        if (id == R.id.nav_notice) {
+        if (id == R.id.nav_main){
+
+        } else if(id == R.id.nav_notice) {
             // Handle the camera action
             intent = new Intent(this, CheckMessageActivity.class);
             startActivity(intent);
-
         } else if (id == R.id.nav_write) {
             intent = new Intent(this, WriteActivity.class);
             startActivity(intent);
-
+            finish();
         } else if (id == R.id.nav_send) {
             intent = new Intent(this, CheckMessageActivity.class);
             startActivity(intent);
-
         } else if (id == R.id.nav_receive) {
             intent = new Intent(this, CheckMessageActivity.class);
             startActivity(intent);
-
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_logout) {
 
+        } else if (id == R.id.nav_header) {
+            intent = new Intent(this, MyInfoActivity.class);
+            startActivity(intent);
+            finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_main);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -100,5 +103,6 @@ public class MainActivity extends AppCompatActivity
     public void WriteBtnClicked(View v){
         Intent intent = new Intent(this, WriteActivity.class);
         startActivity(intent);
+        finish();
     }
 }
