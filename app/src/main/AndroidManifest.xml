@@ -9,26 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< .merge_file_a07500
         <activity android:name=".MainActivity"/>
         <activity
             android:name=".SplashActivity"
-            android:label="MapChat"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"> <!-- 강제 세로모드 (스플래쉬는 가로 지원 X ) -->
-
-=======
-        <activity
-            android:name=".MainActivity"
-            android:label=""
-            android:theme="@style/AppTheme.NoActionBar">
->>>>>>> .merge_file_a13044
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/SplashTheme"/>
+        <!-- 강제 세로모드 (스플래쉬는 가로 지원 X ) -->
         <activity android:name=".CheckMessageActivity"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"/>
