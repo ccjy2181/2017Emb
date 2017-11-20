@@ -8,15 +8,19 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+<<<<<<< HEAD
     <style name="SplashTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
+=======
+>>>>>>> origin/master
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
+<<<<<<< HEAD
     -    <style name="TranslucentStatusBar" parent="@android:style/Theme.Holo.Light">
     -        <item name="android:actionBarStyle">@style/TranslucentActionBar</item>
     -        <!--minAPI 19 버전 이상으로 수정 필요-->
@@ -33,3 +37,10 @@
     -
     -    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
+=======
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>
+>>>>>>> origin/master
