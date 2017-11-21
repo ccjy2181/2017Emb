@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MyInfoActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -73,5 +74,10 @@ public class MyInfoActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_myinfo);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void navHeaderClicked(View v){
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_myinfo);
+        drawer.closeDrawer(GravityCompat.START);
     }
 }

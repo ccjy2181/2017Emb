@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/2017Emb.iml" filepath="$PROJECT_DIR$/2017Emb.iml" />
+      <module fileurl="file://D:\Android_Workspace\TimeCapsule\2017Emb.iml" filepath="D:\Android_Workspace\TimeCapsule\2017Emb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TimeCapsule.iml" filepath="$PROJECT_DIR$/TimeCapsule.iml" />
       <module fileurl="file://D:\dev\embedded\2017Emb\TimeCapsule.iml" filepath="D:\dev\embedded\2017Emb\TimeCapsule.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

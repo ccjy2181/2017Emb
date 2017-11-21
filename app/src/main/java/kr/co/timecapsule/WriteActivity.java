@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 public class WriteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,14 +65,16 @@ public class WriteActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
 
-        } else if (id == R.id.nav_header) {
-            intent = new Intent(this, MyInfoActivity.class);
-            startActivity(intent);
-            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_write);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void navHeaderClicked(View v){
+        Intent intent = new Intent(this, MyInfoActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
