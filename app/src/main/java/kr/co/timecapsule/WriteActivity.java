@@ -50,12 +50,12 @@ public class WriteActivity extends AppCompatActivity
             finish();
         } else if (id == R.id.nav_notice) {
             // Handle the camera action
-            intent = new Intent(this, CheckMessageActivity.class);
+            intent = new Intent(this, NoticeListActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_write) {
 
         } else if (id == R.id.nav_send) {
-            intent = new Intent(this, CheckMessageActivity.class);
+            intent = new Intent(this, NoticeBoardActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_receive) {
             intent = new Intent(this, CheckMessageActivity.class);

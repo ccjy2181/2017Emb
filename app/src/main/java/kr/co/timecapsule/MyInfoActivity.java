@@ -51,10 +51,10 @@ public class MyInfoActivity extends AppCompatActivity
             finish();
         } else if (id == R.id.nav_notice) {
             // Handle the camera action
-            intent = new Intent(this, CheckMessageActivity.class);
+            intent = new Intent(this, NoticeListActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_write) {
-            intent = new Intent(this, WriteActivity.class);
+            intent = new Intent(this, NoticeBoardActivity.class);
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_send) {
