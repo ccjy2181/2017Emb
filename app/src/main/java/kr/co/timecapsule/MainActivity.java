@@ -118,10 +118,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 //            Signout test
             signOut();
-        } else if (id == R.id.nav_header) {
-            intent = new Intent(this, MyInfoActivity.class);
-            startActivity(intent);
-            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_main);
@@ -150,6 +146,22 @@ public class MainActivity extends AppCompatActivity
 
     public void WriteBtnClicked(View v){
         Intent intent = new Intent(this, WriteActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void noticeMoreClicked(View v){
+        Intent intent = new Intent(this, CheckMessageActivity.class);
+        startActivity(intent);
+    }
+
+    public void contentMoreClicked(View v){
+        Intent intent = new Intent(this, CheckMessageActivity.class);
+        startActivity(intent);
+    }
+
+    public void navHeaderClicked(View v){
+        Intent intent = new Intent(this, MyInfoActivity.class);
         startActivity(intent);
         finish();
     }

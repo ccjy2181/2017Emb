@@ -11,20 +11,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:layout_weight="1"
+=======
+        android:orientation="horizontal"
+>>>>>>> 56e949c6a9dbd571181caac3aa891aaed68d5228
         android:background="#ff0000">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+<<<<<<< HEAD
             android:text="제목"/>
+=======
+            android:text="title"/>
+>>>>>>> 56e949c6a9dbd571181caac3aa891aaed68d5228
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_weight="7"
             android:id="@+id/titletext"
+=======
+            android:layout_weight="4"
+>>>>>>> 56e949c6a9dbd571181caac3aa891aaed68d5228
             android:hint="wrtie title"/>
 
     </LinearLayout>
