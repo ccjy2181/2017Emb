@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_settings_black_48dp"
+            android:title="환경설정" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_keyboard_return_black_48dp"
+            android:title="종료" />
+    </group>
+</menu>

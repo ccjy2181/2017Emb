@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -17,6 +17,17 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Trans" parent="AppTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
     <style name="TranslucentStatusBar" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/TranslucentActionBar</item>
         <!--minAPI 19 버전 이상으로 수정 필요-->
@@ -27,9 +38,72 @@
     <style name="TranslucentActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@android:color/transparent</item>
     </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <!--Need to LoginActivity-->
+
+
+    <style name="AppThemeFull" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPurpleLight</item>
+        <item name="colorPrimaryDark">@color/colorPurpleLight</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="h2">
+        <item name="android:textSize">@dimen/h2</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
+    </style>
+
+    <style name="EditText">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:textColorHint">@color/colorTextHint</item>
+        <item name="android:padding">@dimen/space10</item>
+        <item name="android:background">@drawable/bg_top_grey</item>
+        <item name="android:textAppearance">@style/Light</item>
+    </style>
+
+    <style name="h3Info">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@color/colorTextInfo</item>
+    </style>
+
+    <style name="ButtonPink">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/btn_pink</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:padding">@dimen/space20</item>
+    </style>
+
+    <style name="ButtonGreen">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/btn_green</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:padding">@dimen/space20</item>
+    </style>
+
+    <style name="Light" parent="android:TextAppearance">
+        <item name="fontPath">font/Nunito_Regular.ttf</item>
+    </style>
+
+    <style name="LightNav" parent="android:TextAppearance">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="fontPath">font/Nunito_Regular.ttf</item>
+    </style>
+
+    <style name="ExtraLight" parent="android:TextAppearance">
+        <item name="fontPath">font/Nunito_Light.ttf</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

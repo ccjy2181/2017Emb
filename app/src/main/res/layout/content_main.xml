@@ -1,76 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="kr.co.timecapsule.MainActivity"
+    tools:context="kr.co.mapchat.MainActivity"
     tools:showIn="@layout/app_bar_main">
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/write_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_create_black_48dp"
-        android:onClick="WriteBtnClicked"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="15dp"
-        app:fab_colorNormal="@color/white"
-        app:fab_colorPressed="@color/light_gray"
-        app:fab_colorRipple="@color/dimgray"/>
-
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="공지사항"
-                    android:gravity="center"
-                    android:layout_weight="10"
-                    android:textAlignment="center"/>
-                <Button
-                    android:id="@+id/notice_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="더 보기"
-                    android:onClick="noticeMoreClicked"/>
-            </LinearLayout>
-            <ListView
-                android:id="@+id/list_notice1"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#000000"
-                android:layout_marginBottom="10dp"/>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right">
-                <Button
-                    android:id="@+id/content_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="더 보기"
-                    android:onClick="contentMoreClicked"/>
-            </LinearLayout>
-            <ListView
-                android:id="@+id/list_msg"
-                android:layout_width="match_parent"
-                android:layout_height="250dp">
-            </ListView>
-        </LinearLayout>
-    </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+        android:layout_height="match_parent"/>
+</RelativeLayout>
