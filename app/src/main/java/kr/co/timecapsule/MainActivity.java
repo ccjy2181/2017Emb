@@ -53,17 +53,10 @@ public class MainActivity extends BaseActivity
         mAuth = FirebaseAuth.getInstance();
 
         // 현재 로그인한 유저의 정보를 불러옴
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        // 만약 로그아웃이 수행되면 로그인화면으로 이동
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
             }
         };
 
@@ -125,7 +118,7 @@ public class MainActivity extends BaseActivity
                         // 확인 버튼 클릭시 설정
                         public void onClick(DialogInterface dialog, int whichButton){
                             // 앱 종료 확인 시 로그아웃 수행
-                            signOut();
+                            mAuth.signOut();
                             MainActivity.super.onBackPressed();
                         }
                     })
@@ -144,8 +137,10 @@ public class MainActivity extends BaseActivity
     }
 
     // 로그아웃 수행
-    public void signOut(){
+    public void logOut(){
         mAuth.signOut();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
     }
 
     // onStart에서 인증상태를 불러옴
@@ -198,7 +193,7 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_manage){
         } else if (id == R.id.nav_logout){
             // 로그아웃
-            signOut();
+            logOut();
         } else if (id == R.id.nav_exit){
             super.onBackPressed();
         }
