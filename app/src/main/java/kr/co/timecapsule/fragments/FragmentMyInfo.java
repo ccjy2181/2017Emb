@@ -12,7 +12,6 @@ import kr.co.timecapsule.R;
 
 
 public class FragmentMyInfo extends Fragment {
-    View view;
 
     public FragmentMyInfo(){ setHasOptionsMenu(true); }
 

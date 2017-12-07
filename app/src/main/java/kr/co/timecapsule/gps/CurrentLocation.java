@@ -1,4 +1,4 @@
-package kr.co.timecapsule.ggps;
+package kr.co.timecapsule.gps;
 
 
 import android.Manifest;

@@ -23,7 +23,7 @@ import net.daum.mf.map.api.MapPoint;
 
 import kr.co.timecapsule.fragments.FragmentMap;
 import kr.co.timecapsule.fragments.FragmentMyInfo;
-import kr.co.timecapsule.ggps.CurrentLocation;
+import kr.co.timecapsule.gps.CurrentLocation;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main);
+        setContentView(R.layout.activity_main);
 
         setupToolbar(R.id.toolbar, "");
 
