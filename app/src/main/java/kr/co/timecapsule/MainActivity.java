@@ -159,6 +159,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_bookmark) {
         } else if (id == R.id.nav_rank) {
         } else if (id == R.id.nav_manage){
+        } else if (id == R.id.nav_logout){
+            
         } else if (id == R.id.nav_exit){
             super.onBackPressed();
         }

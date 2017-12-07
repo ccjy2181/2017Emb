@@ -22,12 +22,12 @@
     <string name="new_pass">New Password</string>
     <string name="title_activity_profile">Firebase</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
+    <string name="hint_email">이메일</string>
+    <string name="hint_password">비밀번호</string>
     <string name="hint_name">Fullname</string>
-    <string name="btn_login">LOGIN</string>
-    <string name="btn_link_to_register">Not a member? Get registered in App now!</string>
-    <string name="btn_link_to_login">Already registered. Login Me!</string>
+    <string name="btn_login">로그인</string>
+    <string name="btn_link_to_register">회원가입</string>
+    <string name="btn_link_to_login">로그인</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
@@ -39,5 +39,5 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
-    <string name="btn_guest_signin">Guest Sign in</string>
+    <string name="btn_guest_signin">비회원 로그인</string>
 </resources>

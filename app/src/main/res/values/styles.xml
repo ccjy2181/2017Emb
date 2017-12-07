@@ -78,16 +78,28 @@
     </style>
 
     <style name="Light" parent="android:TextAppearance">
-        <item name="fontPath">font/Nunito_Regular.ttf</item>
+        <item name="fontPath">font/Typo_FactoryL.ttf</item>
     </style>
 
     <style name="LightNav" parent="android:TextAppearance">
         <item name="android:textSize">@dimen/h3</item>
-        <item name="fontPath">font/Nunito_Regular.ttf</item>
+        <item name="fontPath">font/Typo_FactoryL.ttf</item>
+    </style>
+
+    <style name="Medium" parent="android:TextAppearance">
+        <item name="fontPath">font/Typo_FactoryM.ttf</item>
     </style>
 
     <style name="ExtraLight" parent="android:TextAppearance">
-        <item name="fontPath">font/Nunito_Light.ttf</item>
+        <item name="fontPath">font/Typo_FactoryL.ttf</item>
+    </style>
+
+    <style name="Bold" parent="android:TextAppearance">
+        <item name="fontPath">font/Typo_FactoryB.ttf</item>
+    </style>
+
+    <style name="ExtraBold" parent="android:TextAppearance">
+        <item name="fontPath">font/Typo_FactoryEB.ttf</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
