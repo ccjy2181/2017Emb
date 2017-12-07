@@ -2,9 +2,11 @@ package kr.co.timecapsule;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +21,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import net.daum.mf.map.api.MapPoint;
 
 import kr.co.timecapsule.fragments.FragmentMap;
@@ -32,6 +37,8 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawer;
     MapPoint current_mp;
     AlertDialog dialog;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener authListener;
 
     private LocationManager locationManager;
 
@@ -41,6 +48,24 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 현재 로그인 정보를 불러옴
+        mAuth = FirebaseAuth.getInstance();
+
+        // 현재 로그인한 유저의 정보를 불러옴
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // 만약 로그아웃이 수행되면 로그인화면으로 이동
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }
+        };
 
         setupToolbar(R.id.toolbar, "");
 
@@ -85,17 +110,6 @@ public class MainActivity extends BaseActivity
         currentLocation.setCurrentLocation();
     }
 
-    private void initializeCountDrawer(){
-        chats.setGravity(Gravity.CENTER);
-        chats.setTypeface(null, Typeface.BOLD);
-        chats.setTextColor(getResources().getColor(R.color.colorAccent));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            chats.setTextAppearance(R.style.LightNav);
-            chats.setTextColor(getResources().getColor(R.color.colorAccent));
-        }
-        chats.setText("99+");
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,6 +124,8 @@ public class MainActivity extends BaseActivity
                     .setPositiveButton("확인", new DialogInterface.OnClickListener(){
                         // 확인 버튼 클릭시 설정
                         public void onClick(DialogInterface dialog, int whichButton){
+                            // 앱 종료 확인 시 로그아웃 수행
+                            signOut();
                             MainActivity.super.onBackPressed();
                         }
                     })
@@ -124,6 +140,27 @@ public class MainActivity extends BaseActivity
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();    // 알림창 띄우기
+        }
+    }
+
+    // 로그아웃 수행
+    public void signOut(){
+        mAuth.signOut();
+    }
+
+    // onStart에서 인증상태를 불러옴
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authListener);
+    }
+
+    // onStop시 인증상태 제거
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authListener != null) {
+            mAuth.removeAuthStateListener(authListener);
         }
     }
 
@@ -160,7 +197,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_rank) {
         } else if (id == R.id.nav_manage){
         } else if (id == R.id.nav_logout){
-            
+            // 로그아웃
+            signOut();
         } else if (id == R.id.nav_exit){
             super.onBackPressed();
         }
