@@ -36,7 +36,7 @@
     <color name="colorDarkGreen">#5FBA7D</color>
     <color name="navColor">#80FFFFFF</color>
 
-
+    <color name="grey">#808080</color>
     <color name="WHITE">#FFFFFF</color>
     <color name="common_red">#FF0000</color>
     <color name="common_yellow">#FFFF00</color>
