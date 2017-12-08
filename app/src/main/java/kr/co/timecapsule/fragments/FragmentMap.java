@@ -1,5 +1,6 @@
 package kr.co.timecapsule.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -20,6 +23,7 @@ import net.daum.mf.map.api.MapView;
 import kr.co.timecapsule.CodeConfig;
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
+import kr.co.timecapsule.WriteActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -31,7 +35,7 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     MapView mapView;
     RelativeLayout mapViewContainer;
     MapPoint mapPoint;
-
+    FloatingActionButton fab_write;
     String token;
 
     double[] location = {0,0};
@@ -53,7 +57,22 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
         //view.bringToFront();
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "실시간 질문");
+        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "실시간 메시지");
+
+        fab_write = (FloatingActionButton) view.findViewById(R.id.map_write);
+        fab_write.setVisibility(View.VISIBLE);
+        fab_write.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapPoint = mapView.getMapCenterPoint();
+                location[0] = mapPoint.getMapPointGeoCoord().longitude;
+                location[1] = mapPoint.getMapPointGeoCoord().latitude;
+                Intent intent = new Intent(getContext(), WriteActivity.class);
+                intent.putExtra("longitude", location[0]);
+                intent.putExtra("latitude", location[1]);
+                startActivity(intent);
+            }
+        });
 
         mapView = new MapView(this.getContext());
 
@@ -64,7 +83,7 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_edit, menu);
+//        inflater.inflate(R.menu.menu_edit, menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -73,10 +92,10 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
             mapPoint = mapView.getMapCenterPoint();
             location[0] = mapPoint.getMapPointGeoCoord().longitude;
             location[1] = mapPoint.getMapPointGeoCoord().latitude;
-//            Intent intent = new Intent(getContext(), WriteActivity.class);
-//            intent.putExtra("longitude", location[0]);
-//            intent.putExtra("latitude", location[1]);
-//            startActivity(intent);
+            Intent intent = new Intent(getContext(), WriteActivity.class);
+            intent.putExtra("longitude", location[0]);
+            intent.putExtra("latitude", location[1]);
+            startActivity(intent);
         }
         return true;
     }

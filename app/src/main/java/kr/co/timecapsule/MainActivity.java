@@ -85,6 +85,7 @@ public class MainActivity extends BaseActivity
         ft.replace(R.id.frameLayout, fragmentMap).commit();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.bringToFront();
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
