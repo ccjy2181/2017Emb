@@ -1,8 +1,10 @@
 package kr.co.timecapsule;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.os.Build;
@@ -37,6 +39,10 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawer;
     MapPoint current_mp;
     AlertDialog dialog;
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "loginID.db";
+    private SQLiteDatabase ID_DB;
+    private IDListDbHelper loginIDListDbHelper;  // login된 현재 current ID를 저장할 local DB
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authListener;
 
@@ -49,8 +55,18 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // DB초기화
+        loginIDListDbHelper = new IDListDbHelper(getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
+        // DB를 읽고 쓰기 위해 DB를 연다
+        ID_DB = loginIDListDbHelper.getWritableDatabase();
         // 현재 로그인 정보를 불러옴
         mAuth = FirebaseAuth.getInstance();
+
+        // SQLiteDB에 저장할 current ID
+        String loginID = mAuth.getCurrentUser().getEmail();
+        ContentValues v = new ContentValues();
+        v.put("loginID", loginID);
+        ID_DB.update("IDLIST", v,"_id=1",null);  // 새로운loginID를 localDB에 update한다.
 
         // 현재 로그인한 유저의 정보를 불러옴
         authListener = new FirebaseAuth.AuthStateListener() {

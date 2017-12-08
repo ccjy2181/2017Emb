@@ -2,6 +2,8 @@ package kr.co.timecapsule;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.HashMap;
+
 public class LoginActivity extends AppCompatActivity{
 
     private EditText inputEmail, inputPassword;
@@ -27,9 +31,19 @@ public class LoginActivity extends AppCompatActivity{
     private Button btnSignup, btnLogin, btnGuest;
 //    , btnReset;
 
+    // DB부분
+    private IDListDbHelper loginIDListDbHelper;
+    private SQLiteDatabase ID_DB;
+    Cursor mCursor;
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "loginID.db";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // SQLiteDBHelper
+        loginIDListDbHelper = new IDListDbHelper(getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -132,6 +146,18 @@ public class LoginActivity extends AppCompatActivity{
                 });
             }
         });
+    }
+
+    @Override
+    public void onStart(){  //
+        super.onStart();
+        // DB를 읽고 쓸수 있게 연다.
+        ID_DB = loginIDListDbHelper.getWritableDatabase();
+        // DB에 저장되어 있는 이전 loginID를 읽어들인다.
+        Cursor c = ID_DB.rawQuery("SELECT loginID FROM IDLIST WHERE _id = 1", null);
+        c.moveToNext();
+        // 위에서 읽어드린 loginID를 EditText에 넣는다.
+        inputEmail.setText(c.getString(c.getColumnIndex("loginID")));
     }
 
     @Override
