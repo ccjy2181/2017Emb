@@ -32,6 +32,7 @@ import net.daum.mf.map.api.MapPoint;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.fragments.FragmentMap;
 import kr.co.timecapsule.fragments.FragmentMyInfo;
+import kr.co.timecapsule.fragments.FragmentWriteMessage;
 import kr.co.timecapsule.gps.CurrentLocation;
 
 public class MainActivity extends BaseActivity
@@ -214,6 +215,9 @@ public class MainActivity extends BaseActivity
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentMap).commit();
         } else if (id == R.id.nav_my_question) {
+            FragmentWriteMessage fragmentWriteMessage = new FragmentWriteMessage();
+            ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayout, fragmentWriteMessage).commit();
         } else if (id == R.id.nav_my_answer) {
         } else if (id == R.id.nav_bookmark) {
         } else if (id == R.id.nav_rank) {
