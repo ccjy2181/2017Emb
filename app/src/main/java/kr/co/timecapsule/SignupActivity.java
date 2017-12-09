@@ -18,6 +18,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
+
+import kr.co.timecapsule.dto.UserDTO;
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -26,6 +33,10 @@ public class SignupActivity extends AppCompatActivity {
 //    , btnResetPassword;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private MyFirebaseConnector myFirebaseConnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +117,16 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+                                    String nickname = inputNickname.getText().toString().trim();
+                                    String email = inputEmail.getText().toString().trim();
+
+                                    UserDTO userDTO = new UserDTO();
+                                    userDTO.setNickname(nickname);
+                                    userDTO.setEmail(email);
+                                    userDTO.setRegdate(new Date());
+                                    userDTO.setToken("");
+
+                                    databaseReference.child("user/" + auth.getCurrentUser().getUid()).setValue(userDTO);
                                     finish();
                                 }
                             }
