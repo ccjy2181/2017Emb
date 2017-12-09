@@ -148,6 +148,7 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
+    // ID(이메일) 저장 기능 구현, 첫 접속시에는 공백이지만 다음 접속시에는 마지막으로 접속한 ID(이메일)가 입력창에 이미 입력되는 기능
     @Override
     public void onStart(){  //
         super.onStart();
@@ -155,14 +156,15 @@ public class LoginActivity extends AppCompatActivity{
         ID_DB = loginIDListDbHelper.getWritableDatabase();
         // DB에 저장되어 있는 이전 loginID를 읽어들인다.
         Cursor c = ID_DB.rawQuery("SELECT loginID FROM IDLIST WHERE _id = 1", null);
-//        c.moveToNext();
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!whoareyou:: "+ c);
-        // 위에서 읽어들인 loginID를 EditText에 넣는다.
-        System.out.println("getColumnIndex!!!:: "+c.getColumnIndex("loginID") );
-        if( c.getString( c.getColumnIndex("loginID") ) == ""){
-            System.out.println("TESTETESTSETSETSETSTSETSETSETSETSETSETSETSETSETSETSETSETETSETSETSETSETSETSETSETSETETETSETSTSETSET");
+        c.moveToNext();
+
+        // 커서로 찾은 데이터가 없을 경우
+        if( c.getCount() == 0){
+            // 공백의 데이터를 삽입
             ID_DB.execSQL("INSERT INTO IDLIST VALUES (null, ' ');");
         } else {
+            // 데이터가 존재하면
+            // 위에서 읽어들인 loginID를 EditText에 넣는다
             inputEmail.setText(c.getString(c.getColumnIndex("loginID")));
         }
     }

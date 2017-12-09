@@ -62,10 +62,10 @@ public class MainActivity extends BaseActivity
         // 현재 로그인 정보를 불러옴
         mAuth = FirebaseAuth.getInstance();
 
-        // SQLiteDB에 저장할 current ID
+        // SQLiteDB에 저장할 current ID(이메일)
         String loginID = mAuth.getCurrentUser().getEmail();
 
-        // ContentValues를 사용해 SQLite에 저장
+        // ContentValues를 사용해 SQLite에 ID(이메일)을 저장
         ContentValues v = new ContentValues();
         v.put("loginID", loginID);
         ID_DB.update("IDLIST", v,"_id=1",null);  // 새로운loginID를 localDB에 update한다.
