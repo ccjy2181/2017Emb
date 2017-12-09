@@ -50,7 +50,7 @@ public class FragmentMyInfo extends Fragment {
     private static final int REQUEST_PERMISSIONS = 1;
 
     ImageView profile_img;
-    TextView tv_nickname;
+    TextView tv_nickname, tv_email;
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -80,11 +80,19 @@ public class FragmentMyInfo extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        tv_nickname = (TextView)view.findViewById(R.id.user_nickname) ;
+                        tv_nickname = (TextView)view.findViewById(R.id.myinfo_user_nickname) ;
+                        tv_email = (TextView)view.findViewById(R.id.myinfo_user_email);
                         UserDTO user = dataSnapshot.getValue(UserDTO.class);
-                        String nickname = user.getNickname();
 
-                        tv_nickname.setText(nickname);
+                        if(user!=null) {
+                            String nickname = user.getNickname();
+                            String email = user.getEmail();
+                            tv_nickname.setText(nickname);
+                            tv_email.setText(email);
+                        } else {
+                            tv_nickname.setText("익명");
+                            tv_email.setText("익명 이메일");
+                        }
                     }
 
                     @Override
@@ -148,7 +156,7 @@ public class FragmentMyInfo extends Fragment {
                         e.printStackTrace();
                     }
                     profile_img.setImageBitmap(bm);
-                    //DB 저장
+                    // Firebase DB에 선택한 이미지 저장
                 }
             }
         }

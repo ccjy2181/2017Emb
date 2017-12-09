@@ -40,12 +40,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <TextView
-            android:id="@+id/user_nickname"
+            android:id="@+id/myinfo_user_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="3"
-            android:text="닉네임"
+            android:text="받는 중..."
             android:textSize="20dp"
             android:textColor="@color/colorPrimaryDark"/>
         <TextView
@@ -59,27 +59,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="20dp"
-        android:weightSum="4">
+        android:weightSum="3">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <TextView
-            android:id="@+id/birthday"
+            android:id="@+id/myinfo_user_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="1"
-            android:text="1991.01.01"
-            android:textSize="12dp"
-            android:textColor="@color/colorPrimaryDark"/>
-        <TextView
-            android:id="@+id/sex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:text="남"
+            android:text="받는 중..."
             android:textSize="12dp"
             android:textColor="@color/colorPrimaryDark"/>
         <TextView
