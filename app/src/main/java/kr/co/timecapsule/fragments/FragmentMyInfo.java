@@ -21,13 +21,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
 import kr.co.timecapsule.SelectGalleryResolver;
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 
 
 public class FragmentMyInfo extends Fragment {
@@ -39,8 +43,11 @@ public class FragmentMyInfo extends Fragment {
     };
     private static final int REQUEST_PERMISSIONS = 1;
 
-    SelectGalleryResolver GalleryResolver;
     ImageView profile_img;
+    TextView userName;
+    private MyFirebaseConnector myFirebaseConnector;
+    private FirebaseAuth mAuth;
+
 
     public FragmentMyInfo(){ setHasOptionsMenu(true); }
 
@@ -128,44 +135,16 @@ public class FragmentMyInfo extends Fragment {
             long ImageId = cursor.getLong(columnIndex);
             if(ImageId != 0) {
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//
-//
-//                bmOptions.inJustDecodeBounds = true;
-//                BitmapFactory.decodeFile(String.valueOf(uri), bmOptions);
-//
-//                BitmapFactory.Options opts = new BitmapFactory.Options();
-//                Bitmap bm = BitmapFactory.decodeFile(String.valueOf(uri), opts);
-//                System.out.println("############################################################################");
-//                System.out.println("Strign U"+ String.valueOf(uri));
-//                System.out.println("U"+ uri);
-//                System.out.println("############################################################################");
-//
-//                ExifInterface exif = new ExifInterface(String.valueOf(uri));
-//                String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-//                int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-//                int rotationAngle = 0;
-//                if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-//                if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-//                if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-//
-//                Matrix matrix = new Matrix();
-//                matrix.setRotate(rotationAngle, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
-//                Bitmap rotatedBitmap = Bitmap.createBitmap(bm, 0, 0, bmOptions.outWidth, bmOptions.outHeight, matrix, true);
-//
-//                System.out.println("############################################################################");
-//                System.out.println(bmOptions.outWidth);
-//                System.out.println(bmOptions.outHeight);
-//                System.out.println("############################################################################");
-//
-//
-//                if(thumbnail.getHeight() > thumbnail.getWidth()){
-//                    thumbnail = imgRotate(thumbnail);
-//                    System.out.println("*****************************************************ok?");
-//                }
+
                 thumbnail = MediaStore.Images.Thumbnails.getThumbnail(
                         getActivity().getContentResolver(), ImageId,
                         MediaStore.Images.Thumbnails.MINI_KIND,
                         bmOptions);
+
+                // 이미지 가로가 세로보다 클 경우 이미지가 옆으로 눞혀보이는 것을 방지
+                if(thumbnail.getHeight() < thumbnail.getWidth()){
+                    thumbnail = imgRotate(thumbnail);
+                }
 
             } else {
                 Toast.makeText(getActivity(), "불러올수 없는 이미지 입니다.", Toast.LENGTH_LONG).show();
@@ -175,7 +154,7 @@ public class FragmentMyInfo extends Fragment {
         return thumbnail;
     }
 
-    // 썸네일 회전, 일단 보류
+    // 썸네일 회전
     private Bitmap imgRotate(Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
