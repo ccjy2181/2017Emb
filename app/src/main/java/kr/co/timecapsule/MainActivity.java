@@ -90,6 +90,9 @@ public class MainActivity extends BaseActivity
 
         setupToolbar(R.id.toolbar, "");
 
+        NavigationView nv = (NavigationView)findViewById(R.id.navigation_drawer_container);
+        nv.bringToFront();
+
         FragmentTransaction ft;
         FragmentMap fragmentMap = new FragmentMap();
         ft = getSupportFragmentManager().beginTransaction();
