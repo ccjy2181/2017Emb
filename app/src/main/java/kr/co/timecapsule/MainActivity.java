@@ -25,10 +25,15 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import net.daum.mf.map.api.MapPoint;
 
+import kr.co.timecapsule.dto.UserDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.fragments.FragmentMap;
 import kr.co.timecapsule.fragments.FragmentMyInfo;
@@ -37,7 +42,7 @@ import kr.co.timecapsule.gps.CurrentLocation;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    TextView chats, nickname;
+    TextView chats, tv_nickname;
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
     MapPoint current_mp;
@@ -48,7 +53,8 @@ public class MainActivity extends BaseActivity
     private IDListDbHelper loginIDListDbHelper;  // login된 현재 current ID를 저장할 local DB
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authListener;
-    private MyFirebaseConnector myFirebaseConnector;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
 
     private LocationManager locationManager;
 
@@ -110,12 +116,27 @@ public class MainActivity extends BaseActivity
 
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
+        // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
 
-//        myFirebaseConnector = new MyFirebaseConnector("user");
-//        myFirebaseConnector.
+        //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
+        databaseReference.child("user").child(mAuth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        tv_nickname = (TextView) findViewById(R.id.sidebar_nickname);
+                        UserDTO user = dataSnapshot.getValue(UserDTO.class);
+                        String nickname = user.getNickname();
 
-//        nickname = (TextView) findViewById(R.id.sidebar_nickname);
-//        nickname.setText();
+                        tv_nickname.setText(nickname);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         setLocation();
 
