@@ -25,16 +25,18 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import net.daum.mf.map.api.MapPoint;
 
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.fragments.FragmentMap;
 import kr.co.timecapsule.fragments.FragmentMyInfo;
 import kr.co.timecapsule.gps.CurrentLocation;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    TextView chats;
+    TextView chats, nickname;
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
     MapPoint current_mp;
@@ -45,6 +47,7 @@ public class MainActivity extends BaseActivity
     private IDListDbHelper loginIDListDbHelper;  // login된 현재 current ID를 저장할 local DB
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authListener;
+    private MyFirebaseConnector myFirebaseConnector;
 
     private LocationManager locationManager;
 
@@ -107,8 +110,13 @@ public class MainActivity extends BaseActivity
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
 
-        setLocation();
+        myFirebaseConnector = new MyFirebaseConnector("user");
+        myFirebaseConnector.
 
+        nickname = (TextView) findViewById(R.id.sidebar_nickname);
+        nickname.setText();
+
+        setLocation();
 
 //        chats =(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
 //                findItem(R.id.nav_chats));
