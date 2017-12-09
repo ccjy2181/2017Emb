@@ -110,11 +110,11 @@ public class MainActivity extends BaseActivity
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
 
-        myFirebaseConnector = new MyFirebaseConnector("user");
-        myFirebaseConnector.
+//        myFirebaseConnector = new MyFirebaseConnector("user");
+//        myFirebaseConnector.
 
-        nickname = (TextView) findViewById(R.id.sidebar_nickname);
-        nickname.setText();
+//        nickname = (TextView) findViewById(R.id.sidebar_nickname);
+//        nickname.setText();
 
         setLocation();
 
