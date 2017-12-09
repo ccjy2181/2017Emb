@@ -54,8 +54,10 @@
 
         <activity android:name=".fragments.FragmentMap" />
         <activity android:name=".fragments.FragmentMyInfo" />
-        <activity android:name=".WriteActivity"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"/>
+        <activity
+            android:name=".WriteActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" />
+        <activity android:name=".fragments.FragmentWriteMessage"></activity>
     </application>
 
 </manifest>
