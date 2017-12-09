@@ -14,10 +14,10 @@ public class UserDTO {
     private String token;
     private Date regdate;
 
-    public UserDTO(String nickname, String email, String token, Date regdate){
-        this.nickname = nickname;
-        this.email = email;
-        this.token = token;
-        this.regdate = regdate;
-    }
+//    public UserDTO(String nickname, String email, String token, Date regdate){
+//        this.nickname = nickname;
+//        this.email = email;
+//        this.token = token;
+//        this.regdate = regdate;
+//    }
 }
