@@ -250,6 +250,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_bookmark) {
         } else if (id == R.id.nav_rank) {
         } else if (id == R.id.nav_manage){
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_logout){
             // 로그아웃
             logOut();
