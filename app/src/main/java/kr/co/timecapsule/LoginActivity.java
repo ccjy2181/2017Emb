@@ -155,9 +155,16 @@ public class LoginActivity extends AppCompatActivity{
         ID_DB = loginIDListDbHelper.getWritableDatabase();
         // DB에 저장되어 있는 이전 loginID를 읽어들인다.
         Cursor c = ID_DB.rawQuery("SELECT loginID FROM IDLIST WHERE _id = 1", null);
-        c.moveToNext();
-        // 위에서 읽어드린 loginID를 EditText에 넣는다.
-        inputEmail.setText(c.getString(c.getColumnIndex("loginID")));
+//        c.moveToNext();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!whoareyou:: "+ c);
+        // 위에서 읽어들인 loginID를 EditText에 넣는다.
+        System.out.println("getColumnIndex!!!:: "+c.getColumnIndex("loginID") );
+        if( c.getString( c.getColumnIndex("loginID") ) == ""){
+            System.out.println("TESTETESTSETSETSETSTSETSETSETSETSETSETSETSETSETSETSETSETETSETSETSETSETSETSETSETSETETETSETSTSETSET");
+            ID_DB.execSQL("INSERT INTO IDLIST VALUES (null, ' ');");
+        } else {
+            inputEmail.setText(c.getString(c.getColumnIndex("loginID")));
+        }
     }
 
     @Override

@@ -17,7 +17,7 @@ public class IDListDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IDLIST (_id INTEGER PRIMARY KEY, loginID TEXT);");
+        db.execSQL("CREATE TABLE IDLIST (_id INTEGER PRIMARY KEY AUTOINCREMENT, loginID TEXT);");
     }
 
     @Override
@@ -29,5 +29,11 @@ public class IDListDbHelper extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion){
         db.execSQL("DROP TABLE IF EXISTS IDLIST;");
         onCreate(db);
+    }
+
+    public void update(String contents) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE IDLIST SET loginID='" + contents + "' WHERE _id=1; ");
+        db.close();
     }
 }
