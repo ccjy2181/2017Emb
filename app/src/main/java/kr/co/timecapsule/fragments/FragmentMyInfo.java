@@ -25,12 +25,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
 import kr.co.timecapsule.SelectGalleryResolver;
+import kr.co.timecapsule.dto.UserDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
 
 
@@ -44,8 +50,10 @@ public class FragmentMyInfo extends Fragment {
     private static final int REQUEST_PERMISSIONS = 1;
 
     ImageView profile_img;
-    TextView userName;
-    private MyFirebaseConnector myFirebaseConnector;
+    TextView tv_nickname;
+
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
 
 
@@ -53,12 +61,37 @@ public class FragmentMyInfo extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_info, null, false);
+        final View view = inflater.inflate(R.layout.fragment_my_info, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
         ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "내 정보");
 
         profile_img = (ImageView)view.findViewById(R.id.character_image);
+
+        // 사용자 정보를 받아옴
+        mAuth = FirebaseAuth.getInstance();
+
+        // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+
+        //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
+        databaseReference.child("user").child(mAuth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        tv_nickname = (TextView)view.findViewById(R.id.user_nickname) ;
+                        UserDTO user = dataSnapshot.getValue(UserDTO.class);
+                        String nickname = user.getNickname();
+
+                        tv_nickname.setText(nickname);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         profile_img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +148,7 @@ public class FragmentMyInfo extends Fragment {
                         e.printStackTrace();
                     }
                     profile_img.setImageBitmap(bm);
+                    //DB 저장
                 }
             }
         }
