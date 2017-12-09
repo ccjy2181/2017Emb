@@ -11,9 +11,8 @@ public class MessageDTO implements Serializable {
     private String contents;
     private double location_latitude;
     private double location_longitude;
-    private int range;
     private String image_string;
-    private Date regdate;
+    private Date receive_date;
 
     //add data
     private String key;

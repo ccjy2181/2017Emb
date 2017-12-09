@@ -14,11 +14,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import java.util.Date;
 
+import kr.co.timecapsule.dto.MessageDTO;
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.system.ImageManager;
 import kr.co.timecapsule.system.Property;
 
@@ -32,7 +37,10 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
     RelativeLayout mapViewContainer;
     MapPoint mapPoint;
 
-//    MyFirebaseConnector myFirebaseConnector;
+    private FirebaseAuth auth;
+    private FirebaseUser firebaseUser;
+
+    MyFirebaseConnector myFirebaseConnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,9 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
         TextView tv_lati = (TextView)findViewById(R.id.latitude);
         tv_long.setText(Double.toString(longitude));
         tv_lati.setText(Double.toString(latitude));
+
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = auth.getCurrentUser();
     }
 
     @Override
@@ -85,20 +96,19 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
 
     public void ButtonWriteClicked(View view) {
 //        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
-//        MessageDTO messageDTO = new MessageDTO();
-//        messageDTO.setUser(prefs.getString("token", ""));
-//        messageDTO.setTitle(getTitleInput());
-//        messageDTO.setContents(getContentInput());
-//        messageDTO.setRange(getArea());
-//        messageDTO.setLocation_latitude(latitude);
-//        messageDTO.setLocation_longitude(longitude);
-//        messageDTO.setRegdate(new Date());
-//        MapPoint.PlainCoordinate wcongMap = mapPoint.getMapPointWCONGCoord();
-//        ImageManager imageManager = new ImageManager();
-//        messageDTO.setImage_string(imageManager.encodingImageData(Property.MAP_IMAGE_URL + "&MX=" + (int)wcongMap.x + "&MY=" + (int)wcongMap.y + "&CX=" + (int)wcongMap.x + "&CY=" + (int)wcongMap.y));
-//
-//        myFirebaseConnector = new MyFirebaseConnector("message");
-//        myFirebaseConnector.insertData(messageDTO);
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setUser(firebaseUser.getUid());
+        messageDTO.setTitle(getTitleInput());
+        messageDTO.setContents(getContentInput());
+        messageDTO.setLocation_latitude(latitude);
+        messageDTO.setLocation_longitude(longitude);
+        messageDTO.setReceive_date(new Date());
+        MapPoint.PlainCoordinate wcongMap = mapPoint.getMapPointWCONGCoord();
+        ImageManager imageManager = new ImageManager();
+        messageDTO.setImage_string(imageManager.encodingImageData(Property.MAP_IMAGE_URL + "&MX=" + (int)wcongMap.x + "&MY=" + (int)wcongMap.y + "&CX=" + (int)wcongMap.x + "&CY=" + (int)wcongMap.y));
+
+        myFirebaseConnector = new MyFirebaseConnector("message");
+        myFirebaseConnector.insertData(messageDTO);
 
         finish();
     }
