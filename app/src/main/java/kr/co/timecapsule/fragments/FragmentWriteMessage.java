@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,31 +39,28 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
     private ActionModeCallback actionModeCallback;
     private ActionMode actionMode;
 
+    public FragmentWriteMessage() { setHasOptionsMenu(true); }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_write_message, null, false);
+        getActivity().supportInvalidateOptionsMenu();
+        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "작성한 메시지");
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        mAdapter = new MessagesAdapter(this, messages, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mAdapter = new MessagesAdapter(getContext(), messages, this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
 
         actionModeCallback = new ActionModeCallback();
@@ -76,14 +74,15 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
                     }
                 }
         );
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_write_message, null, false);
-
-        getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "작성한 메시지");
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
         return view;
     }
@@ -93,39 +92,39 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
      * url: http://api.androidhive.info/json/inbox.json
      */
     private void getInbox() {
-        swipeRefreshLayout.setRefreshing(true);
-
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-
-        Call<List<BoardDTO>> call = apiService.getInbox();
-        call.enqueue(new Callback<List<BoardDTO>>() {
-            @Override
-            public void onResponse(Call<List<BoardDTO>> call, Response<List<BoardDTO>> response) {
-                // clear the inbox
-                messages.clear();
-
-                // add all the messages
-                // messages.addAll(response.body());
-
-                // TODO - avoid looping
-                // the loop was performed to add colors to each message
-                for (BoardDTO message : response.body()) {
-                    // generate a random color
-                    message.setColor(getRandomMaterialColor("400"));
-                    messages.add(message);
-                }
-
-                mAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Call<List<BoardDTO>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+//        swipeRefreshLayout.setRefreshing(true);
+//
+//        ApiInterface apiService =
+//                ApiClient.getClient().create(ApiInterface.class);
+//
+//        Call<List<BoardDTO>> call = apiService.getInbox();
+//        call.enqueue(new Callback<List<BoardDTO>>() {
+//            @Override
+//            public void onResponse(Call<List<BoardDTO>> call, Response<List<BoardDTO>> response) {
+//                // clear the inbox
+//                messages.clear();
+//
+//                // add all the messages
+//                // messages.addAll(response.body());
+//
+//                // TODO - avoid looping
+//                // the loop was performed to add colors to each message
+//                for (BoardDTO message : response.body()) {
+//                    // generate a random color
+//                    message.setColor(getRandomMaterialColor("400"));
+//                    messages.add(message);
+//                }
+//
+//                mAdapter.notifyDataSetChanged();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<BoardDTO>> call, Throwable t) {
+//                Toast.makeText(getContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
     }
 
     /**
@@ -133,7 +132,7 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
      */
     private int getRandomMaterialColor(String typeColor) {
         int returnColor = Color.GRAY;
-        int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", getPackageName());
+        int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", null);
 
         if (arrayId != 0) {
             TypedArray colors = getResources().obtainTypedArray(arrayId);
@@ -144,11 +143,9 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
         return returnColor;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+//        inflater.inflate(R.menu.menu_edit, menu);
     }
 
     @Override
@@ -156,13 +153,7 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            Toast.makeText(getApplicationContext(), "Search...", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+//        int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
     }
@@ -170,16 +161,16 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         // swipe refresh is performed, fetch the messages again
-        getInbox();
+//        getInbox();
     }
 
     @Override
     public void onIconClicked(int position) {
-        if (actionMode == null) {
-            actionMode = startSupportActionMode(actionModeCallback);
-        }
-
-        toggleSelection(position);
+//        if (actionMode == null) {
+//            actionMode = startSupportActionMode(actionModeCallback);
+//        }
+//
+//        toggleSelection(position);
     }
 
     @Override
@@ -205,7 +196,7 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
             messages.set(position, message);
             mAdapter.notifyDataSetChanged();
 
-            Toast.makeText(getApplicationContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -217,7 +208,7 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
 
     private void enableActionMode(int position) {
         if (actionMode == null) {
-            actionMode = startSupportActionMode(actionModeCallback);
+//            actionMode = startSupportActionMode(actionModeCallback);
         }
         toggleSelection(position);
     }
@@ -238,7 +229,7 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
     private class ActionModeCallback implements ActionMode.Callback {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.menu_action_mode, menu);
+//            mode.getMenuInflater().inflate(R.menu.menu_action_mode, menu);
 
             // disable swipe refresh if action mode is enabled
             swipeRefreshLayout.setEnabled(false);
@@ -253,11 +244,11 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.action_delete:
+//                case R.id.action_delete:
                     // delete all the selected messages
-                    deleteMessages();
-                    mode.finish();
-                    return true;
+//                    deleteMessages();
+//                    mode.finish();
+//                    return true;
 
                 default:
                     return false;

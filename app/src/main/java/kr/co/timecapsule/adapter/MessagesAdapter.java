@@ -15,10 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.co.timecapsule.R;
 import kr.co.timecapsule.dto.BoardDTO;
+import kr.co.timecapsule.helper.CircleTransform;
 import kr.co.timecapsule.helper.FlipAnimator;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyViewHolder> {
