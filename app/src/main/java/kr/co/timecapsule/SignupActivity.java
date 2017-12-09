@@ -125,6 +125,7 @@ public class SignupActivity extends AppCompatActivity {
                                     userDTO.setEmail(email);
                                     userDTO.setRegdate(new Date());
                                     userDTO.setToken("");
+                                    userDTO.setProfile_img("");
 
                                     databaseReference.child("user/" + auth.getCurrentUser().getUid()).setValue(userDTO);
                                     finish();

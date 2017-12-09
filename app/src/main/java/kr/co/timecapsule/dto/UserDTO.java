@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class UserDTO {
+    private String profile_img;
     private String nickname;
     private String email;
     private String token;

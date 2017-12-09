@@ -130,9 +130,13 @@ public class MainActivity extends BaseActivity
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         tv_nickname = (TextView) findViewById(R.id.sidebar_nickname);
                         UserDTO user = dataSnapshot.getValue(UserDTO.class);
-                        String nickname = user.getNickname();
 
-                        tv_nickname.setText(nickname);
+                        if(user!=null) {
+                            String nickname = user.getNickname();
+                            tv_nickname.setText(nickname);
+                        } else {
+                            tv_nickname.setText("익명");
+                        }
                     }
 
                     @Override
