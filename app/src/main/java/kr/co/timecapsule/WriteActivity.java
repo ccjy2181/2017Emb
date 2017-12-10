@@ -110,7 +110,7 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
         messageDTO.setImage_string(imageManager.encodingImageData(Property.MAP_IMAGE_URL + "&MX=" + (int)wcongMap.x + "&MY=" + (int)wcongMap.y + "&CX=" + (int)wcongMap.x + "&CY=" + (int)wcongMap.y));
 
         myFirebaseConnector = new MyFirebaseConnector("message");
-        myFirebaseConnector.insertData(messageDTO, user_id);
+        myFirebaseConnector.insertData(messageDTO);
 
         finish();
     }

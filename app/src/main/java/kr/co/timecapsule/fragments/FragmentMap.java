@@ -21,14 +21,17 @@ import net.daum.mf.map.api.MapView;
 
 
 import kr.co.timecapsule.CodeConfig;
+import kr.co.timecapsule.DetailMessageActivity;
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
 import kr.co.timecapsule.WriteActivity;
+import kr.co.timecapsule.dto.MessageDTO;
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentMap extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.CurrentLocationEventListener{
-//    private MyFirebaseConnector myFirebaseConnector;
+    private MyFirebaseConnector myFirebaseConnector;
     private SharedPreferences sharedPreferences;
 
     CodeConfig codeConfig = new CodeConfig();
@@ -119,8 +122,8 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
         mapViewContainer.addView(this.mapView, 0);
         //mapViewContainer.setVisibility(View.GONE);
 
-//        myFirebaseConnector = new MyFirebaseConnector("message", this.getContext());
-//        myFirebaseConnector.getMarkerData(mapView);
+        myFirebaseConnector = new MyFirebaseConnector("message", this.getContext());
+        myFirebaseConnector.getMarkerData(mapView);
     }
 
     @Override
@@ -196,14 +199,14 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-//        MessageDTO messageDTO = (MessageDTO) mapPOIItem.getUserObject();
+        MessageDTO messageDTO = (MessageDTO) mapPOIItem.getUserObject();
 //        if(!messageDTO.getUser().equals(token)) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("messageDTO", messageDTO);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("messageDTO", messageDTO);
 //
-//            Intent intent = new Intent(getContext(), ReplyActivity.class);
-//            intent.putExtras(bundle);
-//            startActivity(intent);
+            Intent intent = new Intent(getContext(), DetailMessageActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 //        }
     }
 

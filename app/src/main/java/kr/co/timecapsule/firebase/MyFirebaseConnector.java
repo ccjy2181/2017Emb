@@ -74,8 +74,8 @@ public class MyFirebaseConnector {
                 item.setTag(map.getPOIItems().length);
                 // 좌표값 지정
                 item.setMapPoint(mapPoint);
-                item.setMarkerType(((messageDTO.getUser()).equals(token)) ? MapPOIItem.MarkerType.YellowPin : MapPOIItem.MarkerType.BluePin);
-                item.setSelectedMarkerType(((messageDTO.getUser()).equals(token)) ? MapPOIItem.MarkerType.YellowPin : MapPOIItem.MarkerType.RedPin);
+                item.setMarkerType(MapPOIItem.MarkerType.BluePin);
+                item.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
                 item.setUserObject(messageDTO);
 
                 map.addPOIItem(item);

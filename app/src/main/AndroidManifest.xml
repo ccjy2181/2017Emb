@@ -67,6 +67,8 @@
             android:theme="@android:style/Theme.DeviceDefault.Dialog" />
         <activity android:name=".fragments.FragmentReceivedMessage" />
         <activity android:name=".fragments.FragmentMessageRaid"></activity>
+        <activity android:name="kr.co.timecapsule.DetailMessageActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"/>
     </application>
 
 </manifest>
