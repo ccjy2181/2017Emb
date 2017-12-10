@@ -9,7 +9,7 @@
         android:title="사용자 이름 사용" />
 
     <EditTextPreference
-        android:defaultValue="Mir"
+        android:defaultValue=" "
         android:dependency="useUserName"
         android:key="userName"
         android:maxLines="1"
@@ -52,6 +52,9 @@
             android:title="알림 소리" />
     </PreferenceCategory>
     <PreferenceCategory android:title="어플 정보" >
+        <Preference
+            android:summary="1.0.0"
+            android:title="어플리케이션 버전"/>
         <Preference
             android:summary="개발자 정보를 확인합니다"
             android:title="개발자 정보" >

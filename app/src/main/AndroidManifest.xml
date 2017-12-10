@@ -62,8 +62,10 @@
         <activity android:name=".fragments.FragmentWriteMessage" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".bluetooth.BluetoothActivity" />
-        <activity android:name=".bluetooth.DeviceListActivity"
-            android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
+        <activity
+            android:name=".bluetooth.DeviceListActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+        <activity android:name=".fragments.FragmentReceivedMessage"></activity>
     </application>
 
 </manifest>

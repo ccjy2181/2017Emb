@@ -37,6 +37,7 @@ import kr.co.timecapsule.dto.UserDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.fragments.FragmentMap;
 import kr.co.timecapsule.fragments.FragmentMyInfo;
+import kr.co.timecapsule.fragments.FragmentReceivedMessage;
 import kr.co.timecapsule.fragments.FragmentWriteMessage;
 import kr.co.timecapsule.gps.CurrentLocation;
 
@@ -247,6 +248,9 @@ public class MainActivity extends BaseActivity
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentWriteMessage).commit();
         } else if (id == R.id.nav_my_answer) {
+            FragmentReceivedMessage fragmentReceivedMessage = new FragmentReceivedMessage();
+            ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayout, fragmentReceivedMessage).commit();
         } else if (id == R.id.nav_bookmark) {
         } else if (id == R.id.nav_rank) {
         } else if (id == R.id.nav_manage){
