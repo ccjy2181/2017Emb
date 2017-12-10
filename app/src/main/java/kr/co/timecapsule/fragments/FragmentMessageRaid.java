@@ -47,8 +47,6 @@ public class FragmentMessageRaid extends Fragment implements SwipeRefreshLayout.
         swipeRefreshLayout.setOnRefreshListener(this);
 
         GridLayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mLayoutManager.setReverseLayout(true);
-        mLayoutManager.setStackFromEnd(true);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
