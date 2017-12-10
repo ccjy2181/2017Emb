@@ -39,6 +39,7 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
 
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
+    private String user_id;
 
     MyFirebaseConnector myFirebaseConnector;
 
@@ -70,6 +71,7 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
 
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
+        user_id = firebaseUser.getUid();
     }
 
     @Override
@@ -108,7 +110,7 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
         messageDTO.setImage_string(imageManager.encodingImageData(Property.MAP_IMAGE_URL + "&MX=" + (int)wcongMap.x + "&MY=" + (int)wcongMap.y + "&CX=" + (int)wcongMap.x + "&CY=" + (int)wcongMap.y));
 
         myFirebaseConnector = new MyFirebaseConnector("message");
-        myFirebaseConnector.insertData(messageDTO);
+        myFirebaseConnector.insertData(messageDTO, user_id);
 
         finish();
     }
