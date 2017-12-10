@@ -19,7 +19,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_write_message" />
+    <include layout="@layout/content_received_message" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
