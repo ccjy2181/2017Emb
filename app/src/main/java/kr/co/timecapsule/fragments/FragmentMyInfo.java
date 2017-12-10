@@ -69,8 +69,8 @@ public class FragmentMyInfo extends Fragment {
     private FirebaseStorage firebaseStorage;
     private StorageReference rootReference;
     private UploadTask uploadTask;
-    private StorageReference storageRef;
-    private StorageReference storageImagesRef;
+//    private StorageReference storageRef;
+//    private StorageReference storageImagesRef;
 
 
 
@@ -125,13 +125,18 @@ public class FragmentMyInfo extends Fragment {
         profile_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    boolean permission = hasAllPermissionsGranted();
-                    Log.e("test","permission : "+permission);
-                    if(!permission)
-                        return;
+                String n = tv_nickname.getText().toString();
+                if( n != "익명") {
+                    if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        boolean permission = hasAllPermissionsGranted();
+                        Log.e("test", "permission : " + permission);
+                        if (!permission)
+                            return;
+                    }
+                    getGalley();
+                }else{
+                    Toast.makeText(getActivity(), "비회원은 사진을 등록할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
-                getGalley();
             }
         });
         return view;
@@ -162,9 +167,6 @@ public class FragmentMyInfo extends Fragment {
                     Uri returnImg = data.getData();
                     String filepath = data.getData().getPath();
                     Uri file = Uri.parse("media" + filepath);
-                    System.out.println("###################file");
-                    System.out.println(file);
-                    System.out.println(file.getLastPathSegment().toString());
                     if("com.google.android.apps.photos.contentprovider".equals(returnImg.getAuthority())) {
                         for(int i=0;i<returnImg.getPathSegments().size();i++) {
                             String temp = returnImg.getPathSegments().get(i);
@@ -181,10 +183,9 @@ public class FragmentMyInfo extends Fragment {
                     }
                     profile_img.setImageBitmap(bm);
 
+                    // Firebase Storage에 이미지 저장
                     StorageReference reference = rootReference.child("profile_img").child(mAuth.getCurrentUser().getUid());
                     StorageReference riversRef = reference.child(returnImg.getLastPathSegment());
-                    System.out.println("####################################file.lastPathSegment");
-                    System.out.println(file.getPath());
                     uploadTask = riversRef.putFile(returnImg);
 
                     uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
