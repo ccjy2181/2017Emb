@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -42,6 +44,8 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
     private String user_id;
 
     MyFirebaseConnector myFirebaseConnector;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,9 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
         user_id = firebaseUser.getUid();
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
     }
 
     @Override
@@ -110,7 +117,9 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
         messageDTO.setImage_string(imageManager.encodingImageData(Property.MAP_IMAGE_URL + "&MX=" + (int)wcongMap.x + "&MY=" + (int)wcongMap.y + "&CX=" + (int)wcongMap.x + "&CY=" + (int)wcongMap.y));
 
         myFirebaseConnector = new MyFirebaseConnector("message");
-        myFirebaseConnector.insertData(messageDTO);
+        String key = myFirebaseConnector.insertData(messageDTO).getKey();
+        databaseReference.child("message").child(key+"/msgkey").setValue(key);
+        databaseReference.child("writtenby").child(auth.getCurrentUser().getUid()+"/msgkey").setValue(key);
 
         finish();
     }
