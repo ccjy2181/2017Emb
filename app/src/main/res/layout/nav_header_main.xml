@@ -13,7 +13,7 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/sidebar_imageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ryan"
