@@ -35,6 +35,7 @@ public class SettingsActivity extends PreferenceActivity {
         setOnPreferenceChange(findPreference("userName"));
         setOnPreferenceChange(findPreference("userNameOpen"));
         setOnPreferenceChange(findPreference("autoUpdate_ringtone"));
+        setOnPreferenceChange(findPreference("version_information"));
     }
 
     private void setOnPreferenceChange(Preference mPreference) {

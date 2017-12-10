@@ -54,7 +54,8 @@
     <PreferenceCategory android:title="어플 정보" >
         <Preference
             android:summary="1.0.0"
-            android:title="어플리케이션 버전"/>
+            android:title="어플리케이션 버전"
+            android:key="version_information"/>
         <Preference
             android:summary="개발자 정보를 확인합니다"
             android:title="개발자 정보" >
