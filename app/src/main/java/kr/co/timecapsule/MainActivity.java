@@ -36,6 +36,7 @@ import net.daum.mf.map.api.MapPoint;
 import kr.co.timecapsule.dto.UserDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.fragments.FragmentMap;
+import kr.co.timecapsule.fragments.FragmentMessageRaid;
 import kr.co.timecapsule.fragments.FragmentMyInfo;
 import kr.co.timecapsule.fragments.FragmentReceivedMessage;
 import kr.co.timecapsule.fragments.FragmentWriteMessage;
@@ -252,6 +253,9 @@ public class MainActivity extends BaseActivity
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentReceivedMessage).commit();
         } else if (id == R.id.nav_msg_raid) {
+            FragmentMessageRaid fragmentMessageRaid = new FragmentMessageRaid();
+            ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayout, fragmentMessageRaid).commit();
         } else if (id == R.id.nav_manage){
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
