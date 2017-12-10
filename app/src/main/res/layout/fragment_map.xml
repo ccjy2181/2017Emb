@@ -7,6 +7,14 @@
     android:id="@+id/map_layout"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <ImageView
+        android:id="@+id/marker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/marker_bottom"
+        android:src="@drawable/map_marker" />
+
     <RelativeLayout
         android:id="@+id/map_view"
         android:layout_width="match_parent"

@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
+
 public class CurrentLocation extends AppCompatActivity {
 
     Activity activity;
@@ -67,9 +69,9 @@ public class CurrentLocation extends AppCompatActivity {
                         userMap.put("location_latitude", location.getLatitude());
                         userMap.put("location_longitude", location.getLongitude());
 
-//                        MyFirebaseConnector myFirebaseConnector;
-//                        myFirebaseConnector = new MyFirebaseConnector("user");
-//                        myFirebaseConnector.updateData(prefs.getString("token", ""), userMap);
+                        MyFirebaseConnector myFirebaseConnector;
+                        myFirebaseConnector = new MyFirebaseConnector("user");
+                        myFirebaseConnector.updateData(prefs.getString("token", ""), userMap);
 
                         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                                 ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

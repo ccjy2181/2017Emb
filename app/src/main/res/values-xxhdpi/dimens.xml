@@ -6,4 +6,5 @@
     <dimen name="h4">14sp</dimen>
     <dimen name="h5">12sp</dimen>
     <dimen name="maxwidth">190dp</dimen>
+    <dimen name="marker_bottom">36dp</dimen>
 </resources>

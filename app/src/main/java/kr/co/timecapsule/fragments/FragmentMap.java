@@ -1,16 +1,27 @@
 package kr.co.timecapsule.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -20,6 +31,8 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 
+import java.util.List;
+
 import kr.co.timecapsule.CodeConfig;
 import kr.co.timecapsule.DetailMessageActivity;
 import kr.co.timecapsule.MainActivity;
@@ -27,12 +40,22 @@ import kr.co.timecapsule.R;
 import kr.co.timecapsule.WriteActivity;
 import kr.co.timecapsule.dto.MessageDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
+import kr.co.timecapsule.gps.CurrentLocation;
+import kr.co.timecapsule.gps.GPSTracker;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class FragmentMap extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.CurrentLocationEventListener{
+public class FragmentMap extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.CurrentLocationEventListener {
     private MyFirebaseConnector myFirebaseConnector;
     private SharedPreferences sharedPreferences;
+
+    // GPSTracker class
+    GPSTracker gps = null;
+
+    public Handler mHandler;
+
+    public static int RENEW_GPS = 1;
+    public static int SEND_PRINT = 2;
 
     CodeConfig codeConfig = new CodeConfig();
     MapView mapView;
@@ -40,8 +63,12 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     MapPoint mapPoint;
     FloatingActionButton fab_write;
     String token;
+    MapPOIItem customMarker;
+
+    MapPoint myLocation;
 
     double[] location = {0,0};
+    private double latitude, longitude;
 
     public FragmentMap(){
         setHasOptionsMenu(true);
@@ -61,6 +88,15 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
         getActivity().supportInvalidateOptionsMenu();
         ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "남겨진 메시지");
+        customMarker = new MapPOIItem();
+        ImageView marker = (ImageView) view.findViewById(R.id.marker);
+        marker.bringToFront();
+
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( getActivity() , new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    0 );
+        }
 
         fab_write = (FloatingActionButton) view.findViewById(R.id.map_write);
         fab_write.setVisibility(View.VISIBLE);
@@ -86,21 +122,66 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-//        inflater.inflate(R.menu.menu_edit, menu);
+        inflater.inflate(R.menu.menu_refresh, menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
-        if(id == R.id.new_chat){
-            mapPoint = mapView.getMapCenterPoint();
-            location[0] = mapPoint.getMapPointGeoCoord().longitude;
-            location[1] = mapPoint.getMapPointGeoCoord().latitude;
-            Intent intent = new Intent(getContext(), WriteActivity.class);
-            intent.putExtra("longitude", location[0]);
-            intent.putExtra("latitude", location[1]);
-            startActivity(intent);
+        if(id == R.id.refresh){
+            if(gps == null) {
+                gps = new GPSTracker(getContext(), mHandler);
+            }else{
+                gps.Update();
+            }
+
+            // check if GPS enabled
+            if(gps.canGetLocation()){
+                latitude = gps.getLatitude();
+                longitude = gps.getLongitude();
+                // can't get location
+                // GPS or Network is not enabled
+                // Ask user to enable GPS/network in settings
+            }
+            setMyLocationMarker();
         }
         return true;
+    }
+
+    public void makeNewGpsService(){
+        if(gps == null) {
+            gps = new GPSTracker(getContext(),mHandler);
+        }else{
+            gps.Update();
+        }
+
+    }
+
+    public void setMyLocationMarker() {
+        myLocation = MapPoint.mapPointWithGeoCoord(latitude, longitude);
+
+        System.out.println("####################################");
+        System.out.println(latitude + "," + longitude);
+        System.out.println("####################################");
+
+        makeCustomMarker(myLocation, customMarker);
+    }
+
+    public void makeCustomMarker(MapPoint mapPoint, MapPOIItem customMarker){
+        deleteCustomMarker(customMarker);
+        customMarker.setItemName("현 위치");
+        customMarker.setTag(1);
+        customMarker.setMapPoint(mapPoint);
+        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker.setCustomImageResourceId(R.drawable.my_location_marker); // 마커 이미지.
+        customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+        customMarker.setShowCalloutBalloonOnTouch(false);
+
+        mapView.addPOIItem(customMarker);
+    }
+
+    public void deleteCustomMarker(MapPOIItem customMarker){
+        mapView.removePOIItem(customMarker);
     }
 
     public void resetFragment(){
@@ -217,18 +298,10 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float v) {
-        //this.mapView.setMapCenterPointAndZoomLevel(mapPoint, 3, true);
-        //this.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
-        //mapViewContainer.setVisibility(View.VISIBLE);
+        this.mapView.setMapCenterPointAndZoomLevel(mapPoint, 3, true);
+        this.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        mapViewContainer.setVisibility(View.VISIBLE);
 
-//        Map<String, Object> userMap = new HashMap<>();
-//
-//        userMap.put("location_latitude", mapPoint.getMapPointGeoCoord().latitude);
-//        userMap.put("location_longitude", mapPoint.getMapPointGeoCoord().longitude);
-//
-//        MyFirebaseConnector myFirebaseConnectorForUser;
-//        myFirebaseConnectorForUser = new MyFirebaseConnector("user");
-//        myFirebaseConnectorForUser.updateData(token, userMap);
     }
 
     @Override
