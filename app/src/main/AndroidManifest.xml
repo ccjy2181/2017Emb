@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 갤러리 검색권한 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:allowBackup="true"
@@ -58,7 +60,10 @@
             android:name=".WriteActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
         <activity android:name=".fragments.FragmentWriteMessage" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".bluetooth.BluetoothActivity" />
+        <activity android:name=".bluetooth.DeviceListActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
     </application>
 
 </manifest>
