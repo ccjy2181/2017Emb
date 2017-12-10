@@ -12,6 +12,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -24,14 +25,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
@@ -55,6 +66,12 @@ public class FragmentMyInfo extends Fragment {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference rootReference;
+    private UploadTask uploadTask;
+    private StorageReference storageRef;
+    private StorageReference storageImagesRef;
+
 
 
     public FragmentMyInfo(){ setHasOptionsMenu(true); }
@@ -74,6 +91,10 @@ public class FragmentMyInfo extends Fragment {
         // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
+
+        //로컬 파일에서 업로드
+        firebaseStorage = FirebaseStorage.getInstance();
+        rootReference = firebaseStorage.getReferenceFromUrl("gs://embed-member.appspot.com");
 
         //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
         databaseReference.child("user").child(mAuth.getCurrentUser().getUid())
@@ -139,15 +160,18 @@ public class FragmentMyInfo extends Fragment {
                 Log.d("test","data : "+data);
                 if(data != null) {
                     Uri returnImg = data.getData();
+                    String filepath = data.getData().getPath();
+                    Uri file = Uri.parse("media" + filepath);
+                    System.out.println("###################file");
+                    System.out.println(file);
+                    System.out.println(file.getLastPathSegment().toString());
                     if("com.google.android.apps.photos.contentprovider".equals(returnImg.getAuthority())) {
                         for(int i=0;i<returnImg.getPathSegments().size();i++) {
                             String temp = returnImg.getPathSegments().get(i);
-                            if(temp.startsWith("content://")) {
-                                returnImg = Uri.parse(temp);
-                                break;
-                            }
+
                         }
                     }
+
                     // 썸네일 가져오기
                     Bitmap bm = null;
                     try {
@@ -156,7 +180,29 @@ public class FragmentMyInfo extends Fragment {
                         e.printStackTrace();
                     }
                     profile_img.setImageBitmap(bm);
-                    // Firebase DB에 선택한 이미지 저장
+
+                    StorageReference reference = rootReference.child("profile_img").child(mAuth.getCurrentUser().getUid());
+                    StorageReference riversRef = reference.child(returnImg.getLastPathSegment());
+                    System.out.println("####################################file.lastPathSegment");
+                    System.out.println(file.getPath());
+                    uploadTask = riversRef.putFile(returnImg);
+
+                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            System.out.println("Success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            System.out.println("Fail!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        }
+                    });
+
                 }
             }
         }
