@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -62,6 +63,7 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     MapPoint mapPoint;
     FloatingActionButton fab_write;
     String token;
+    MapPOIItem customMarker;
 
     MapPoint myLocation;
 
@@ -86,6 +88,9 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
         getActivity().supportInvalidateOptionsMenu();
         ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "남겨진 메시지");
+        customMarker = new MapPOIItem();
+        ImageView marker = (ImageView) view.findViewById(R.id.marker);
+        marker.bringToFront();
 
         if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -158,7 +163,6 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
         System.out.println(latitude + "," + longitude);
         System.out.println("####################################");
 
-        MapPOIItem customMarker = new MapPOIItem();
         makeCustomMarker(myLocation, customMarker);
     }
 

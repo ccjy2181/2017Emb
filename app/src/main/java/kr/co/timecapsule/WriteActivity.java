@@ -48,7 +48,7 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
     private FirebaseUser firebaseUser;
     private String user_id;
 
-    EditText year, month, day, hour, minute;
+    EditText et_year, et_month, et_day, et_hour, et_minute;
     SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     MyFirebaseConnector myFirebaseConnector;
@@ -113,30 +113,35 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
 
     public void ButtonWriteClicked(View view) {
 
-        year = (EditText) findViewById(R.id.write_year);
-        month = (EditText) findViewById(R.id.write_month);
-        day = (EditText) findViewById(R.id.write_day);
-        hour = (EditText) findViewById(R.id.write_hour);
-        minute = (EditText) findViewById(R.id.write_minute);
+        et_year = (EditText) findViewById(R.id.write_year);
+        et_month = (EditText) findViewById(R.id.write_month);
+        et_day = (EditText) findViewById(R.id.write_day);
+        et_hour = (EditText) findViewById(R.id.write_hour);
+        et_minute = (EditText) findViewById(R.id.write_minute);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String year = et_year.getText().toString();
+        String month = et_month.getText().toString();
+        String day = et_day.getText().toString();
+        String hour = et_hour.getText().toString();
+        String minute = et_minute.getText().toString();
 
-        if(year.getText().equals("") || month.getText().equals("") || day.getText().equals("")||
-                hour.getText().equals("") || minute.getText().equals("") ){
+        if(year.matches("") || month.matches("") || day.matches("")||
+                hour.matches("") || minute.matches("") ){
             Toast.makeText(getApplicationContext(), "비어있는 값이 있습니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(Integer.parseInt(month.getText().toString())> 12 ||
-                Integer.parseInt(day.getText().toString()) > 31 ||
-                Integer.parseInt(hour.getText().toString()) > 24 ||
-                Integer.parseInt(minute.getText().toString()) > 60 ) {
+        if(Integer.parseInt(month)> 12 ||
+                Integer.parseInt(day) > 31 ||
+                Integer.parseInt(hour) > 24 ||
+                Integer.parseInt(minute) > 60 ) {
             Toast.makeText(getApplicationContext(), "입력 가능 범위를 초과합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String date_temp = year.getText().toString() + "-" + month.getText().toString() + "-" + day.getText().toString() + " " +
-                            hour.getText().toString() + ":" + minute.getText().toString();
+        String date_temp = year + "-" + month + "-" + day + " " + hour + ":" + minute;
+
         try {
             Date date = transFormat.parse(date_temp);
             Date current_time = transFormat.parse(transFormat.format(new Date(System.currentTimeMillis())));
@@ -153,7 +158,7 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
         }
 
 
-//        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setUser(firebaseUser.getUid());
         messageDTO.setTitle(getTitleInput());
