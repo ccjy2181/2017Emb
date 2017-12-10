@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
-    android:layout_height="400dp"
+    android:layout_height="450dp"
     android:orientation="vertical"
     tools:context="kr.co.timecapsule.DetailMessageActivity">
 
@@ -25,38 +25,35 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="200dp"
             android:orientation="vertical">
-            <LinearLayout
+            <TextView
+                android:id="@+id/detail_message_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space5"
+                android:text="제목"
+                android:textColor="#000000"
+                android:textAlignment="center"/>
+            <TextView
+                android:id="@+id/detail_message_writer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space5"
+                android:text="작성자"
+                android:textColor="#000000"
+                android:textAlignment="center"/>
+            <TextView
+                android:id="@+id/detail_message_contents"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/detail_message_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space5"
-                    android:text="제목"
-                    android:textAlignment="center"/>
-                <TextView
-                    android:id="@+id/detail_message_writer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space5"
-                    android:text="작성자"
-                    android:textAlignment="center"/>
-                <TextView
-                    android:id="@+id/detail_message_contents"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/space5"
-                    android:layout_marginLeft="@dimen/space10"
-                    android:layout_marginRight="@dimen/space10"
-                    android:layout_marginBottom="@dimen/space5"
-                    android:gravity="start"
-                    android:hint="내용"
-                    android:maxWidth="290dp"/>
-            </LinearLayout>
+                android:layout_marginLeft="@dimen/space10"
+                android:layout_marginRight="@dimen/space10"
+                android:layout_marginBottom="@dimen/space5"
+                android:padding="@dimen/space5"
+                android:gravity="start"
+                android:hint="내용"
+                android:maxWidth="290dp"/>
         </LinearLayout>
 
         <RelativeLayout
@@ -68,7 +65,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/space5"
                 android:onClick="ButtonCancelClicked"
                 android:text="확인" />
         </RelativeLayout>

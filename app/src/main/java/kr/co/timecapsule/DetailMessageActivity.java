@@ -27,6 +27,8 @@ public class DetailMessageActivity extends Activity{
     DatabaseReference databaseReference;
 
     MessageDTO messageDTO;
+    ImageView img;
+    TextView tv_title, tv_contents, tv_writer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,14 @@ public class DetailMessageActivity extends Activity{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserDTO user = dataSnapshot.getValue(UserDTO.class);
+                System.out.println("user: "+user);
                 if(user!=null) {
                     writer = user.getNickname();
+                    System.out.println("writer & user.getNickname:  "+writer+" , " +user.getNickname());
+
+                    tv_writer = (TextView) findViewById(R.id.detail_message_writer);
+                    tv_writer.setText(writer);
+
                 } else {
                     writer = "익명";
                 }
@@ -59,22 +67,20 @@ public class DetailMessageActivity extends Activity{
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
         super.onCreate(savedInstanceState);
 
-        ImageView img = (ImageView)findViewById(R.id.detail_message_map);
-        TextView tv_title = (TextView) findViewById(R.id.detail_message_title);
-        TextView tv_contents = (TextView) findViewById(R.id.detail_message_contents);
-        TextView tv_writer = (TextView) findViewById(R.id.detail_message_writer);
+        img = (ImageView)findViewById(R.id.detail_message_map);
+        tv_title = (TextView) findViewById(R.id.detail_message_title);
+        tv_contents = (TextView) findViewById(R.id.detail_message_contents);
 
         ImageManager imageManager = new ImageManager();
         img.setImageBitmap(imageManager.decodingImageData(messageDTO.getImage_string()));
+
         tv_title.setText(title);
         tv_contents.setText(contents);
-        tv_writer.setText(writer);
     }
 
     @Override
