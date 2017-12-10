@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,6 +44,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
@@ -69,10 +73,10 @@ public class FragmentMyInfo extends Fragment {
     private FirebaseStorage firebaseStorage;
     private StorageReference rootReference;
     private UploadTask uploadTask;
+
+    private Uri oriPath;
 //    private StorageReference storageRef;
 //    private StorageReference storageImagesRef;
-
-
 
     public FragmentMyInfo(){ setHasOptionsMenu(true); }
 
@@ -80,17 +84,25 @@ public class FragmentMyInfo extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_my_info, null, false);
 
-        getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "내 정보");
-
-        profile_img = (ImageView)view.findViewById(R.id.character_image);
-
         // 사용자 정보를 받아옴
         mAuth = FirebaseAuth.getInstance();
 
         // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
+
+        getActivity().supportInvalidateOptionsMenu();
+        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "내 정보");
+
+        String originimageID = mAuth.getCurrentUser().getUid();
+        oriPath = Uri.parse("gs://embed-member.appspot.com" + "/profile_img" + originimageID);
+        Bitmap originbm;
+        try {
+            originbm = getThumbNail(oriPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        profile_img = (ImageView)view.findViewById(R.id.character_image);
 
         //로컬 파일에서 업로드
         firebaseStorage = FirebaseStorage.getInstance();
@@ -158,7 +170,10 @@ public class FragmentMyInfo extends Fragment {
         return true;
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    private String email, nickname, token, prof_img;
+    private Date regdate;
+
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_FROM_ALBUM) {
             if (resultCode == Activity.RESULT_OK) {
@@ -196,6 +211,17 @@ public class FragmentMyInfo extends Fragment {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             System.out.println("Success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                            prof_img = oriPath.toString();
+
+                            UserDTO user = new UserDTO();
+                            user.setEmail(email);
+                            user.setNickname(nickname);
+                            user.setProf_img(prof_img);
+                            user.setRegdate(regdate);
+                            user.setToken(token);
+
+                            databaseReference.child("user").child(mAuth.getCurrentUser().getUid()).child("profile_img").setValue(user);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

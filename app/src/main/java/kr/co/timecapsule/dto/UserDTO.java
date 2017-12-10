@@ -1,6 +1,10 @@
 package kr.co.timecapsule.dto;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -9,16 +13,10 @@ import lombok.Data;
  */
 @Data
 public class UserDTO {
-    private String profile_img;
+    private String prof_img;
     private String nickname;
     private String email;
     private String token;
     private Date regdate;
 
-//    public UserDTO(String nickname, String email, String token, Date regdate){
-//        this.nickname = nickname;
-//        this.email = email;
-//        this.token = token;
-//        this.regdate = regdate;
-//    }
 }
