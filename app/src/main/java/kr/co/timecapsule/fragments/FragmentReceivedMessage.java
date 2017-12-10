@@ -49,7 +49,7 @@ public class FragmentReceivedMessage extends Fragment implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_write_message, null, false);
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "작성한 메시지");
+        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "확인한 메시지");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);

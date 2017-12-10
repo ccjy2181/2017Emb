@@ -239,20 +239,19 @@ public class MainActivity extends BaseActivity
         FragmentTransaction ft;
         int id = item.getItemId();
 
-        if (id == R.id.nav_all_question) {
+        if (id == R.id.nav_leaved_msg) {
             FragmentMap fragmentMap = new FragmentMap();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentMap).commit();
-        } else if (id == R.id.nav_my_question) {
+        } else if (id == R.id.nav_written_msg) {
             FragmentWriteMessage fragmentWriteMessage = new FragmentWriteMessage();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentWriteMessage).commit();
-        } else if (id == R.id.nav_my_answer) {
+        } else if (id == R.id.nav_received_msg) {
             FragmentReceivedMessage fragmentReceivedMessage = new FragmentReceivedMessage();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentReceivedMessage).commit();
-        } else if (id == R.id.nav_bookmark) {
-        } else if (id == R.id.nav_rank) {
+        } else if (id == R.id.nav_msg_raid) {
         } else if (id == R.id.nav_manage){
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);

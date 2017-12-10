@@ -57,7 +57,7 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
         //view.bringToFront();
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "실시간 메시지");
+        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "남겨진 메시지");
 
         fab_write = (FloatingActionButton) view.findViewById(R.id.map_write);
         fab_write.setVisibility(View.VISIBLE);
