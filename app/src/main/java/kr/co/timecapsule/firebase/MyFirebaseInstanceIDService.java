@@ -1,5 +1,8 @@
 package kr.co.timecapsule.firebase;
 
+import android.content.SharedPreferences;
+
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -22,11 +25,11 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         UserDTO userDTO = new UserDTO();
         userDTO.setToken(refreshedToken);
         userDTO.setRegdate(new Date());
-//        MyFirebaseConnector myFirebaseConnector = new MyFirebaseConnector("user");
-//        DatabaseReference resultData = myFirebaseConnector.insertData(userDTO);
-//        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putString("token", resultData.getKey());
-//        editor.commit();
+        MyFirebaseConnector myFirebaseConnector = new MyFirebaseConnector("user");
+        DatabaseReference resultData = myFirebaseConnector.insertData(userDTO);
+        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("token", resultData.getKey());
+        editor.commit();
     }
 }
