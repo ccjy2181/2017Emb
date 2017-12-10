@@ -90,7 +90,8 @@ public class FragmentMyInfo extends Fragment {
 
         imageDbHelper = new ImageDbHelper(getActivity(), DATABASE_NAME, null, DATABASE_VERSION);
         Image_DB = imageDbHelper.getWritableDatabase();
-        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
+//        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
+        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE", null);
         c.moveToNext();
 
         if(c.getCount() == 0){
@@ -206,7 +207,7 @@ public class FragmentMyInfo extends Fragment {
                         bm = getThumbNail(returnImg);
                         profile_img.setImageBitmap(bm);
                         // local DB에 저장
-                        Image_DB.update("IMAGETABLE", bm, "_id=1", null);
+//                        Image_DB.update("IMAGETABLE", bm, "_id=1", null);
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -263,6 +264,10 @@ public class FragmentMyInfo extends Fragment {
         bmp.recycle();
 
         return resizedBitmap;
+    }
+
+    private byte[] getBlob(String image){
+        ByteArrayBuffer baf =
     }
 
 }
