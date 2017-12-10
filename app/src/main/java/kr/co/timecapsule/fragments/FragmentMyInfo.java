@@ -111,17 +111,15 @@ public class FragmentMyInfo extends Fragment {
             System.out.println("Insert");
             Image_DB.execSQL("INSERT INTO IMAGETABLE VALUES (null, ' ');");
         }else{
+            // loacl DB에서 이미지를 가져옴
             System.out.println("load");
             byte[] bytes = c.getBlob(c.getColumnIndex("image"));
             System.out.println(bytes);
             Bitmap bm = toBitmap(bytes);
-//            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             System.out.println(bm);
             profile_img.setImageBitmap(bm);
 
         }
-
-
 
         // 사용자 정보를 받아옴
         mAuth = FirebaseAuth.getInstance();
@@ -129,10 +127,6 @@ public class FragmentMyInfo extends Fragment {
         // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
-
-
-
-        //로컬 파일에서 업로드
 
         //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
         databaseReference.child("user").child(mAuth.getCurrentUser().getUid())
@@ -260,7 +254,6 @@ public class FragmentMyInfo extends Fragment {
 
                     // LocalDB Image_DB에 사진 저장
                     byte[] bytes = toByte(thumbnail);
-//                    Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     Image_DB = imageDbHelper.getWritableDatabase();
                     ContentValues v = new ContentValues();
                     v.put("Image", bytes);
@@ -290,6 +283,7 @@ public class FragmentMyInfo extends Fragment {
         return resizedBitmap;
     }
 
+    // Bitmap형식을 Byte[] 형식으로 변환
     private byte[] toByte(Bitmap b){
         Bitmap bitmap = b;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -299,6 +293,7 @@ public class FragmentMyInfo extends Fragment {
         return data;
     }
 
+    // Byte[]형식을 Bitmap 형식으로 변환
     public Bitmap toBitmap(byte[] b){
         Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
         return bitmap;
