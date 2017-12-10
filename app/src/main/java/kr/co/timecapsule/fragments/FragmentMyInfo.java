@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,11 +43,15 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +76,7 @@ public class FragmentMyInfo extends Fragment {
 
     ImageView profile_img;
     TextView tv_nickname, tv_email;
+    URL url;
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -87,23 +94,34 @@ public class FragmentMyInfo extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_my_info, null, false);
+
+        getActivity().supportInvalidateOptionsMenu();
+        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "내 정보");
+
+        profile_img = (ImageView)view.findViewById(R.id.character_image);
 
         imageDbHelper = new ImageDbHelper(getActivity(), DATABASE_NAME, null, DATABASE_VERSION);
         Image_DB = imageDbHelper.getWritableDatabase();
-//        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
-        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE", null);
+        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
         c.moveToNext();
 
         if(c.getCount() == 0){
             // 공백의 데이터 삽입
+            System.out.println("Insert");
             Image_DB.execSQL("INSERT INTO IMAGETABLE VALUES (null, ' ');");
         }else{
-            byte[] bytes = c.getBlob(0);
-            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            System.out.println("load");
+            byte[] bytes = c.getBlob(c.getColumnIndex("image"));
+            System.out.println(bytes);
+            Bitmap bm = toBitmap(bytes);
+//            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            System.out.println(bm);
             profile_img.setImageBitmap(bm);
+
         }
 
-        final View view = inflater.inflate(R.layout.fragment_my_info, null, false);
+
 
         // 사용자 정보를 받아옴
         mAuth = FirebaseAuth.getInstance();
@@ -112,10 +130,7 @@ public class FragmentMyInfo extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
 
-        getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "내 정보");
 
-        profile_img = (ImageView)view.findViewById(R.id.character_image);
 
         //로컬 파일에서 업로드
 
@@ -242,6 +257,15 @@ public class FragmentMyInfo extends Fragment {
                 // 이미지 가로가 세로보다 클 경우 이미지가 옆으로 눞혀보이는 것을 방지
                 if(thumbnail.getHeight() < thumbnail.getWidth()){
                     thumbnail = imgRotate(thumbnail);
+
+                    // LocalDB Image_DB에 사진 저장
+                    byte[] bytes = toByte(thumbnail);
+//                    Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Image_DB = imageDbHelper.getWritableDatabase();
+                    ContentValues v = new ContentValues();
+                    v.put("Image", bytes);
+                    System.out.println("Db upload");
+                    Image_DB.update("IMAGETABLE", v, "_id=1", null);
                 }
 
             } else {
@@ -266,8 +290,17 @@ public class FragmentMyInfo extends Fragment {
         return resizedBitmap;
     }
 
-    private byte[] getBlob(String image){
-        ByteArrayBuffer baf =
+    private byte[] toByte(Bitmap b){
+        Bitmap bitmap = b;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] data = stream.toByteArray();
+
+        return data;
     }
 
+    public Bitmap toBitmap(byte[] b){
+        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        return bitmap;
+    }
 }
