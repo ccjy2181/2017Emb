@@ -1,9 +1,11 @@
 package kr.co.timecapsule;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import kr.co.timecapsule.dto.MessageDTO;
@@ -42,6 +47,9 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
     private String user_id;
+
+    EditText year, month, day, hour, minute;
+    SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     MyFirebaseConnector myFirebaseConnector;
     FirebaseDatabase firebaseDatabase;
@@ -104,6 +112,47 @@ public class WriteActivity extends Activity implements MapView.MapViewEventListe
     }
 
     public void ButtonWriteClicked(View view) {
+
+        year = (EditText) findViewById(R.id.write_year);
+        month = (EditText) findViewById(R.id.write_month);
+        day = (EditText) findViewById(R.id.write_day);
+        hour = (EditText) findViewById(R.id.write_hour);
+        minute = (EditText) findViewById(R.id.write_minute);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        if(year.getText().equals("") || month.getText().equals("") || day.getText().equals("")||
+                hour.getText().equals("") || minute.getText().equals("") ){
+            Toast.makeText(getApplicationContext(), "비어있는 값이 있습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(Integer.parseInt(month.getText().toString())> 12 ||
+                Integer.parseInt(day.getText().toString()) > 31 ||
+                Integer.parseInt(hour.getText().toString()) > 24 ||
+                Integer.parseInt(minute.getText().toString()) > 60 ) {
+            Toast.makeText(getApplicationContext(), "입력 가능 범위를 초과합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String date_temp = year.getText().toString() + "-" + month.getText().toString() + "-" + day.getText().toString() + " " +
+                            hour.getText().toString() + ":" + minute.getText().toString();
+        try {
+            Date date = transFormat.parse(date_temp);
+            Date current_time = transFormat.parse(transFormat.format(new Date(System.currentTimeMillis())));
+
+            int result = current_time.compareTo(date);
+            if(result > 0 ) {
+                Toast.makeText(getApplicationContext(), "현재 시간보다 입력한 날짜가 더 이전입니다.", Toast.LENGTH_SHORT).show();
+                return;
+            } else if(result < 0 ){
+            } else {}
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
 //        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setUser(firebaseUser.getUid());
