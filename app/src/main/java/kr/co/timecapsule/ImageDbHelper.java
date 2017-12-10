@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 /**
  * Created by mg556 on 2017-12-11.
  */
@@ -13,8 +16,12 @@ public class ImageDbHelper extends SQLiteOpenHelper{
         super(context, name, factory, version);
     }
 
+    private FirebaseAuth firebaseAuth;
+
     @Override
     public void onCreate(SQLiteDatabase db) {
+        firebaseAuth = FirebaseAuth.getInstance();
+        System.out.println("ididididididididididididi: "+firebaseAuth.getCurrentUser().getUid());
         db.execSQL("CREATE TABLE IMAGETABLE (_id INTEGER PRIMARY KEY AUTOINCREMENT, image BLOB);");
     }
 

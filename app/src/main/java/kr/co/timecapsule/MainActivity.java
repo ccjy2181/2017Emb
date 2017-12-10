@@ -4,7 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.os.Build;
@@ -21,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +36,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import net.daum.mf.map.api.MapPoint;
+
+import java.io.ByteArrayOutputStream;
 
 import kr.co.timecapsule.dto.UserDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
@@ -49,6 +55,7 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawer;
     MapPoint current_mp;
     AlertDialog dialog;
+    ImageView header_profile_img;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "loginID.db";
     private SQLiteDatabase ID_DB;
@@ -58,7 +65,16 @@ public class MainActivity extends BaseActivity
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
+    // local DB부분
+    private ImageDbHelper imageDbHelper;
+    private SQLiteDatabase Image_DB;
+    public static final int IMAGE_DATABASE_VERSION = 1;
+    public static final String IMAGE_DATABASE_NAME = "Image.db";
+
+    FragmentMyInfo fragmentMyInfo;
     private LocationManager locationManager;
+
+    private String nickname;
 
     double[] location = {0,0};
 
@@ -66,6 +82,9 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tv_nickname = (TextView) findViewById(R.id.sidebar_nickname);
+        header_profile_img = (ImageView)findViewById(R.id.sidebar_imageView);
 
         // DB초기화
         loginIDListDbHelper = new IDListDbHelper(getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
@@ -125,17 +144,41 @@ public class MainActivity extends BaseActivity
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
 
+        imageDbHelper = new ImageDbHelper(getApplicationContext(), IMAGE_DATABASE_NAME, null, IMAGE_DATABASE_VERSION);
+        Image_DB = imageDbHelper.getWritableDatabase();
+
         //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
         databaseReference.child("user").child(mAuth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        
+                        header_profile_img = (ImageView)findViewById(R.id.sidebar_imageView);
+
                         tv_nickname = (TextView) findViewById(R.id.sidebar_nickname);
                         UserDTO user = dataSnapshot.getValue(UserDTO.class);
 
+                        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
+                        c.moveToNext();
+
                         if(user!=null) {
-                            String nickname = user.getNickname();
+                            nickname = user.getNickname();
                             tv_nickname.setText(nickname);
+
+                            if (c.getCount() == 0) {
+                                // 공백의 데이터 삽입
+                                System.out.println("Insert");
+                                Image_DB.execSQL("INSERT INTO IMAGETABLE VALUES (null, ' ');");
+                            } else {
+                                // loacl DB에서 이미지를 가져옴
+                                System.out.println("load");
+                                byte[] bytes = c.getBlob(c.getColumnIndex("image"));
+                                System.out.println(bytes);
+                                Bitmap bm = toBitmap(bytes);
+                                System.out.println(bm);
+                                header_profile_img.setImageBitmap(bm);
+                            }
+
                         } else {
                             tv_nickname.setText("익명");
                         }
@@ -284,5 +327,21 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // Bitmap형식을 Byte[] 형식으로 변환
+    private byte[] toByte(Bitmap b){
+        Bitmap bitmap = b;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] data = stream.toByteArray();
+
+        return data;
+    }
+
+    // Byte[]형식을 Bitmap 형식으로 변환
+    public Bitmap toBitmap(byte[] b){
+        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        return bitmap;
     }
 }

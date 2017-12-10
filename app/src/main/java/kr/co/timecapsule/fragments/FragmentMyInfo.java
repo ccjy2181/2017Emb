@@ -86,7 +86,6 @@ public class FragmentMyInfo extends Fragment {
     // local DB부분
     private ImageDbHelper imageDbHelper;
     private SQLiteDatabase Image_DB;
-    Cursor mCursor;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Image.db";
 
@@ -101,32 +100,15 @@ public class FragmentMyInfo extends Fragment {
 
         profile_img = (ImageView)view.findViewById(R.id.character_image);
 
-        imageDbHelper = new ImageDbHelper(getActivity(), DATABASE_NAME, null, DATABASE_VERSION);
-        Image_DB = imageDbHelper.getWritableDatabase();
-        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
-        c.moveToNext();
-
-        if(c.getCount() == 0){
-            // 공백의 데이터 삽입
-            System.out.println("Insert");
-            Image_DB.execSQL("INSERT INTO IMAGETABLE VALUES (null, ' ');");
-        }else{
-            // loacl DB에서 이미지를 가져옴
-            System.out.println("load");
-            byte[] bytes = c.getBlob(c.getColumnIndex("image"));
-            System.out.println(bytes);
-            Bitmap bm = toBitmap(bytes);
-            System.out.println(bm);
-            profile_img.setImageBitmap(bm);
-
-        }
-
         // 사용자 정보를 받아옴
         mAuth = FirebaseAuth.getInstance();
 
         // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
+
+        imageDbHelper = new ImageDbHelper(getActivity(), DATABASE_NAME, null, DATABASE_VERSION);
+        Image_DB = imageDbHelper.getWritableDatabase();
 
         //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
         databaseReference.child("user").child(mAuth.getCurrentUser().getUid())
@@ -136,12 +118,28 @@ public class FragmentMyInfo extends Fragment {
                         tv_nickname = (TextView)view.findViewById(R.id.myinfo_user_nickname) ;
                         tv_email = (TextView)view.findViewById(R.id.myinfo_user_email);
                         UserDTO user = dataSnapshot.getValue(UserDTO.class);
+                        Cursor c = Image_DB.rawQuery("SELECT image FROM IMAGETABLE WHERE _id=1", null);
+                        c.moveToNext();
 
                         if(user!=null) {
                             String nickname = user.getNickname();
                             String email = user.getEmail();
                             tv_nickname.setText(nickname);
                             tv_email.setText(email);
+                            System.out.println("no 익명");
+                            if (c.getCount() == 0) {
+                                // 공백의 데이터 삽입
+                                System.out.println("Insert");
+                                Image_DB.execSQL("INSERT INTO IMAGETABLE VALUES (null, ' ');");
+                            } else {
+                                // loacl DB에서 이미지를 가져옴
+                                System.out.println("load");
+                                byte[] bytes = c.getBlob(c.getColumnIndex("image"));
+                                System.out.println(bytes);
+                                Bitmap bm = toBitmap(bytes);
+                                System.out.println(bm);
+                                profile_img.setImageBitmap(bm);
+                            }
                         } else {
                             tv_nickname.setText("익명");
                             tv_email.setText("익명 이메일");
@@ -154,12 +152,24 @@ public class FragmentMyInfo extends Fragment {
                     }
                 });
 
+
+
+//
+//        tv_nickname = (TextView)view.findViewById(R.id.myinfo_user_nickname) ;
+//        String name = tv_nickname.getText().toString();
+//        if( name != "익명") {
+//
+//            }
+//        }
+
+
+
         profile_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String n = tv_nickname.getText().toString();
+                String name = tv_nickname.getText().toString();
                 // 비회원은 갤러리에서 사진을 받아와 저장하는 것이 불가능, 회원만 가능
-                if( n != "익명") {
+                if( name != "익명") {
                     if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         boolean permission = hasAllPermissionsGranted();
                         Log.e("test", "permission : " + permission);
