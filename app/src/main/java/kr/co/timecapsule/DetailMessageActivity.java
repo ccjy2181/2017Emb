@@ -62,6 +62,7 @@ public class DetailMessageActivity extends Activity{
 
                 } else {
                     writer = "익명";
+                    tv_writer.setText(writer);
                 }
             }
 
