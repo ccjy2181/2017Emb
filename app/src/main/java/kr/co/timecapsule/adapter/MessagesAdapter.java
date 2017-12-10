@@ -1,10 +1,13 @@
 package kr.co.timecapsule.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -18,11 +21,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.timecapsule.R;
 import kr.co.timecapsule.dto.BoardDTO;
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.helper.CircleTransform;
 import kr.co.timecapsule.helper.FlipAnimator;
 
@@ -36,27 +43,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     private SparseBooleanArray animationItemsIndex;
     private boolean reverseAllAnimations = false;
 
+    private double latitude, longitude;
+
     // index is used to animate only the selected row
     // dirty fix, find a better solution
     private static int currentSelectedIndex = -1;
 
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-        public TextView from, subject, message, iconText, timestamp;
-        public ImageView iconImp, imgProfile;
+        public TextView nickname, title, content, iconText, receive_date;
+        public ImageView imgProfile;
         public LinearLayout messageContainer;
         public RelativeLayout iconContainer, iconBack, iconFront;
 
         public MyViewHolder(View view) {
             super(view);
-            from = (TextView) view.findViewById(R.id.from);
-            subject = (TextView) view.findViewById(R.id.txt_primary);
-            message = (TextView) view.findViewById(R.id.txt_secondary);
-            iconText = (TextView) view.findViewById(R.id.icon_text);
-            timestamp = (TextView) view.findViewById(R.id.timestamp);
+            nickname = (TextView) view.findViewById(R.id.nickname_adt);
+            title = (TextView) view.findViewById(R.id.title_adt);
+            content = (TextView) view.findViewById(R.id.content_adt);
+            receive_date = (TextView) view.findViewById(R.id.receive_date);
             iconBack = (RelativeLayout) view.findViewById(R.id.icon_back);
             iconFront = (RelativeLayout) view.findViewById(R.id.icon_front);
-            iconImp = (ImageView) view.findViewById(R.id.icon_star);
+
             imgProfile = (ImageView) view.findViewById(R.id.icon_profile);
+            iconText = (TextView) view.findViewById(R.id.icon_text);
+
             messageContainer = (LinearLayout) view.findViewById(R.id.message_container);
             iconContainer = (RelativeLayout) view.findViewById(R.id.icon_container);
             view.setOnLongClickListener(this);
@@ -64,8 +76,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
         @Override
         public boolean onLongClick(View view) {
-            listener.onRowLongClicked(getAdapterPosition());
-            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+//            listener.onRowLongClicked(getAdapterPosition());
+//            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             return true;
         }
     }
@@ -81,10 +93,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.message_list_row, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_list_row, parent, false);
 
-        return new MyViewHolder(itemView);
+        MyViewHolder viewHolder = new MyViewHolder(itemView);
+
+        return viewHolder;
     }
 
     @Override
@@ -92,22 +105,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         BoardDTO message = messages.get(position);
 
         // displaying text view data
-        holder.from.setText(message.getFrom());
-        holder.subject.setText(message.getSubject());
-        holder.message.setText(message.getMessage());
-        holder.timestamp.setText(message.getTimestamp());
+        holder.nickname.setText(message.getNickname());
+        holder.title.setText(message.getTitle());
+        holder.content.setText(message.getContents());
+        holder.receive_date.setText(message.getReceive_date().getYear() + "-" + message.getReceive_date().getMonth() + "-" + message.getReceive_date().getDay() + " " + message.getReceive_date().getMonth() + ":" + message.getReceive_date().getMinutes());
 
         // displaying the first letter of From in icon text
-        holder.iconText.setText(message.getFrom().substring(0, 1));
+        holder.iconText.setText(message.getNickname().substring(0, 1));
 
         // change the row state to activated
         holder.itemView.setActivated(selectedItems.get(position, false));
 
         // change the font style depending on message read status
         applyReadStatus(holder, message);
-
-        // handle message star
-        applyImportant(holder, message);
 
         // handle icon animation
         applyIconAnimation(holder, position);
@@ -124,13 +134,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             @Override
             public void onClick(View view) {
                 listener.onIconClicked(position);
-            }
-        });
-
-        holder.iconImp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onIconImportantClicked(position);
             }
         });
 
@@ -152,13 +155,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     }
 
     private void applyProfilePicture(MyViewHolder holder, BoardDTO message) {
-        if (!TextUtils.isEmpty(message.getPicture())) {
-            Glide.with(mContext).load(message.getPicture())
-                    .thumbnail(0.5f)
-                    .crossFade()
-                    .transform(new CircleTransform(mContext))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.imgProfile);
+        if (!TextUtils.isEmpty(message.getImage_string())) {
+//            Glide.with(mContext).load(message.getImage_string())
+//                    .thumbnail(0.5f)
+//                    .crossFade()
+//                    .transform(new CircleTransform(mContext))
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .into(holder.imgProfile);
+            byte[] encodeByte = Base64.decode(message.getImage_string(), Base64.DEFAULT);
+            InputStream inputStream = new ByteArrayInputStream(encodeByte);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            holder.imgProfile.setImageBitmap(bitmap);
             holder.imgProfile.setColorFilter(null);
             holder.iconText.setVisibility(View.GONE);
         } else {
@@ -204,32 +211,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         animationItemsIndex.clear();
     }
 
-    @Override
-    public long getItemId(int position) {
-        return messages.get(position).getId();
-    }
-
-    private void applyImportant(MyViewHolder holder, BoardDTO message) {
-        if (message.isImportant()) {
-            holder.iconImp.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_star_black_24dp));
-            holder.iconImp.setColorFilter(ContextCompat.getColor(mContext, R.color.icon_tint_selected));
-        } else {
-            holder.iconImp.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_star_border_black_24dp));
-            holder.iconImp.setColorFilter(ContextCompat.getColor(mContext, R.color.icon_tint_normal));
-        }
+    public String getItemUser(int position) {
+        return messages.get(position).getUser();
     }
 
     private void applyReadStatus(MyViewHolder holder, BoardDTO message) {
         if (message.isRead()) {
-            holder.from.setTypeface(null, Typeface.NORMAL);
-            holder.subject.setTypeface(null, Typeface.NORMAL);
-            holder.from.setTextColor(ContextCompat.getColor(mContext, R.color.subject));
-            holder.subject.setTextColor(ContextCompat.getColor(mContext, R.color.message));
+            holder.nickname.setTypeface(null, Typeface.NORMAL);
+            holder.title.setTypeface(null, Typeface.NORMAL);
+            holder.nickname.setTextColor(ContextCompat.getColor(mContext, R.color.subject));
+            holder.title.setTextColor(ContextCompat.getColor(mContext, R.color.message));
         } else {
-            holder.from.setTypeface(null, Typeface.BOLD);
-            holder.subject.setTypeface(null, Typeface.BOLD);
-            holder.from.setTextColor(ContextCompat.getColor(mContext, R.color.from));
-            holder.subject.setTextColor(ContextCompat.getColor(mContext, R.color.subject));
+            holder.nickname.setTypeface(null, Typeface.BOLD);
+            holder.title.setTypeface(null, Typeface.BOLD);
+            holder.nickname.setTextColor(ContextCompat.getColor(mContext, R.color.from));
+            holder.title.setTextColor(ContextCompat.getColor(mContext, R.color.subject));
         }
     }
 
@@ -280,8 +276,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
     public interface MessageAdapterListener {
         void onIconClicked(int position);
-
-        void onIconImportantClicked(int position);
 
         void onMessageRowClicked(int position);
 

@@ -21,7 +21,7 @@ import kr.co.timecapsule.dto.BoardDTO;
 import kr.co.timecapsule.dto.MessageDTO;
 import kr.co.timecapsule.helper.RaidRecyclerView;
 
-public class FragmentMessageRaid extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MessagesAdapter.MessageAdapterListener{
+public class FragmentMessageRaid extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private List<MessageDTO> data;
     private RecyclerView mRecyclerView;
@@ -59,26 +59,6 @@ public class FragmentMessageRaid extends Fragment implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-
-    }
-
-    @Override
-    public void onIconClicked(int position) {
-
-    }
-
-    @Override
-    public void onIconImportantClicked(int position) {
-
-    }
-
-    @Override
-    public void onMessageRowClicked(int position) {
-
-    }
-
-    @Override
-    public void onRowLongClicked(int position) {
 
     }
 }

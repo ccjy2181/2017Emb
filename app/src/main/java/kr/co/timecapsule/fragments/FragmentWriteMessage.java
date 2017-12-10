@@ -2,6 +2,7 @@ package kr.co.timecapsule.fragments;
 
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,21 +24,27 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
 import kr.co.timecapsule.adapter.MessagesAdapter;
 import kr.co.timecapsule.dto.BoardDTO;
+import kr.co.timecapsule.firebase.MyFirebaseConnector;
 import kr.co.timecapsule.helper.DividerItemDecoration;
 
 public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MessagesAdapter.MessageAdapterListener {
-    private List<BoardDTO> messages = new ArrayList<>();
+    private List<BoardDTO> messages;
     private RecyclerView recyclerView;
     private MessagesAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ActionModeCallback actionModeCallback;
     private ActionMode actionMode;
+    MyFirebaseConnector myFirebaseConnector;
+
 
     public FragmentWriteMessage() { setHasOptionsMenu(true); }
 
@@ -51,38 +58,29 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
         View view = inflater.inflate(R.layout.fragment_write_message, null, false);
         getActivity().supportInvalidateOptionsMenu();
         ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "작성한 메시지");
+        messages = new ArrayList<>();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
 
         mAdapter = new MessagesAdapter(getContext(), messages, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
 
+        myFirebaseConnector = new MyFirebaseConnector("message", this.getContext());
+        myFirebaseConnector.getMyMessageList(messages, mAdapter);
+
+        mAdapter.notifyDataSetChanged();
+
         actionModeCallback = new ActionModeCallback();
-
-        // show loader and fetch messages
-        swipeRefreshLayout.post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        getInbox();
-                    }
-                }
-        );
-
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         return view;
     }
@@ -161,7 +159,8 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         // swipe refresh is performed, fetch the messages again
-//        getInbox();
+        mAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -173,15 +172,6 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
 //        toggleSelection(position);
     }
 
-    @Override
-    public void onIconImportantClicked(int position) {
-        // Star icon is clicked,
-        // mark the message as important
-        BoardDTO message = messages.get(position);
-        message.setImportant(!message.isImportant());
-        messages.set(position, message);
-        mAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onMessageRowClicked(int position) {
@@ -196,33 +186,33 @@ public class FragmentWriteMessage extends Fragment implements SwipeRefreshLayout
             messages.set(position, message);
             mAdapter.notifyDataSetChanged();
 
-            Toast.makeText(getContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Read: " + message.getContents(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onRowLongClicked(int position) {
         // long press is performed, enable action mode
-        enableActionMode(position);
+//        enableActionMode(position);
     }
 
     private void enableActionMode(int position) {
-        if (actionMode == null) {
-//            actionMode = startSupportActionMode(actionModeCallback);
-        }
-        toggleSelection(position);
+//        if (actionMode == null) {
+////            actionMode = startSupportActionMode(actionModeCallback);
+//        }
+//        toggleSelection(position);
     }
 
     private void toggleSelection(int position) {
-        mAdapter.toggleSelection(position);
-        int count = mAdapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
-        }
+//        mAdapter.toggleSelection(position);
+//        int count = mAdapter.getSelectedItemCount();
+//
+//        if (count == 0) {
+//            actionMode.finish();
+//        } else {
+//            actionMode.setTitle(String.valueOf(count));
+//            actionMode.invalidate();
+//        }
     }
 
 

@@ -74,15 +74,6 @@ public class FragmentReceivedMessage extends Fragment implements SwipeRefreshLay
                 }
         );
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         return view;
     }
 
@@ -172,12 +163,12 @@ public class FragmentReceivedMessage extends Fragment implements SwipeRefreshLay
 //        toggleSelection(position);
     }
 
-    @Override
+//    @Override
     public void onIconImportantClicked(int position) {
         // Star icon is clicked,
         // mark the message as important
         BoardDTO message = messages.get(position);
-        message.setImportant(!message.isImportant());
+//        message.setImportant(!message.isImportant());
         messages.set(position, message);
         mAdapter.notifyDataSetChanged();
     }
@@ -195,7 +186,7 @@ public class FragmentReceivedMessage extends Fragment implements SwipeRefreshLay
             messages.set(position, message);
             mAdapter.notifyDataSetChanged();
 
-            Toast.makeText(getContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
