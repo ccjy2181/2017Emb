@@ -72,10 +72,13 @@ public class FragmentMyInfo extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseStorage firebaseStorage;
     private StorageReference rootReference;
+    private StorageReference pathReference;
+    private StorageReference storageRef;
     private UploadTask uploadTask;
 
     private Uri oriPath;
-//    private StorageReference storageRef;
+    private String prof_img;
+    public String img_info;
 //    private StorageReference storageImagesRef;
 
     public FragmentMyInfo(){ setHasOptionsMenu(true); }
@@ -89,23 +92,101 @@ public class FragmentMyInfo extends Fragment {
 
         // 사용자 정보(닉네임)을 받아오기 위해 firebase에 접근
         firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
         databaseReference = firebaseDatabase.getReference();
+
+        databaseReference.child("user").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserDTO user = dataSnapshot.getValue(UserDTO.class);
+
+                String pro_str = user.getProf_img();
+                System.out.println("user info: " + user);
+//                Uri pro_uri = Uri.parse(pro_str);
+
+                System.out.println("uri: " + pro_str);
+                if (!pro_str.isEmpty()) {
+                    // DB에서 사진 불러오기
+                    // 사진정보 확인 지금 null
+//                    System.out.println(img_info);
+                    storageRef = firebaseStorage.getReferenceFromUrl("gs://embed-member.appspot.com/");
+                    pathReference = storageRef.child("profile_img").child(mAuth.getCurrentUser().getUid()).child("27889");
+                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Bitmap originbm;
+                            System.out.println("getDownloadUrl Success!!!!!!!!!!!!!!!!!!");
+                            try {
+                                oriPath = uri;
+                                originbm = getThumbNail(oriPath);
+                                profile_img.setImageBitmap(originbm);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            System.out.println("getDownloadUrl Fail!!!!!!!!!!!!!!!!!!");
+                        }
+                    });
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        storageRef = firebaseStorage.getReferenceFromUrl("gs://embed-member.appspot.com/");
+//
+//        pathReference = storageRef.child("profile_img").child(mAuth.getCurrentUser().getUid()+"/prof_img");
 
         getActivity().supportInvalidateOptionsMenu();
         ((MainActivity)getActivity()).changeTitle(R.id.toolbar, "내 정보");
 
-        String originimageID = mAuth.getCurrentUser().getUid();
-        oriPath = Uri.parse("gs://embed-member.appspot.com" + "/profile_img" + originimageID);
-        Bitmap originbm;
-        try {
-            originbm = getThumbNail(oriPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        Bitmap originbm;
+//        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                Bitmap originbm;
+//                System.out.println("getDownloadUrl Success!!!!!!!!!!!!!!!!!!");
+//                try {
+//                    oriPath = uri;
+//                    originbm = getThumbNail(oriPath);
+//                    profile_img.setImageBitmap(originbm);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                System.out.println("getDownloadUrl Fail!!!!!!!!!!!!!!!!!!");
+//            }
+//        });
+//        String originimageID = mAuth.getCurrentUser().getUid();
+//        oriPath = Uri.parse("gs://embed-member.appspot.com" + "/profile_img" + originimageID);
+
+//        try {
+//            originbm = getThumbNail(oriPath);
+//            System.out.println(originbm);
+//            if(originbm == null){
+//                profile_img = (ImageView)view.findViewById(R.id.character_image);
+//            }else {
+//                profile_img.setImageBitmap(originbm);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        profile_img.setImageBitmap(originbm);
         profile_img = (ImageView)view.findViewById(R.id.character_image);
 
         //로컬 파일에서 업로드
-        firebaseStorage = FirebaseStorage.getInstance();
+
         rootReference = firebaseStorage.getReferenceFromUrl("gs://embed-member.appspot.com");
 
         //firebase에 접근하여 실제 데이터를 받아와서 textview에 출력
@@ -138,6 +219,7 @@ public class FragmentMyInfo extends Fragment {
             @Override
             public void onClick(View view) {
                 String n = tv_nickname.getText().toString();
+                // 비회원은 갤러리에서 사진을 받아와 저장하는 것이 불가능, 회원만 가능
                 if( n != "익명") {
                     if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         boolean permission = hasAllPermissionsGranted();
@@ -154,12 +236,14 @@ public class FragmentMyInfo extends Fragment {
         return view;
     }
 
+    // 갤러리로 이동
     private void getGalley() {
         Intent intent = new Intent(Intent.ACTION_PICK,  android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(intent, PICK_FROM_ALBUM);
     }
 
+    // 권한 받아오기
     public boolean hasAllPermissionsGranted() {
         for (String permission : MY_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
@@ -170,8 +254,6 @@ public class FragmentMyInfo extends Fragment {
         return true;
     }
 
-    private String email, nickname, token, prof_img;
-    private Date regdate;
 
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -179,7 +261,7 @@ public class FragmentMyInfo extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
                 Log.d("test","data : "+data);
                 if(data != null) {
-                    Uri returnImg = data.getData();
+                    final Uri returnImg = data.getData();
                     String filepath = data.getData().getPath();
                     Uri file = Uri.parse("media" + filepath);
                     if("com.google.android.apps.photos.contentprovider".equals(returnImg.getAuthority())) {
@@ -201,6 +283,10 @@ public class FragmentMyInfo extends Fragment {
                     // Firebase Storage에 이미지 저장
                     StorageReference reference = rootReference.child("profile_img").child(mAuth.getCurrentUser().getUid());
                     StorageReference riversRef = reference.child(returnImg.getLastPathSegment());
+                    // 체크
+                    img_info = returnImg.getLastPathSegment();
+
+                    System.out.println("getLastPathSegment: " + returnImg.getLastPathSegment());
                     uploadTask = riversRef.putFile(returnImg);
 
                     uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -211,17 +297,14 @@ public class FragmentMyInfo extends Fragment {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             System.out.println("Success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            System.out.println("oriPath: " +returnImg);
 
-                            prof_img = oriPath.toString();
+                            prof_img = returnImg.toString();
+                            System.out.println("oriPath: " +returnImg);
 
-                            UserDTO user = new UserDTO();
-                            user.setEmail(email);
-                            user.setNickname(nickname);
-                            user.setProf_img(prof_img);
-                            user.setRegdate(regdate);
-                            user.setToken(token);
+                            // 현재 접속 아이디의 prof_img에 사진 URI를 저장
+                            databaseReference.child("user").child(mAuth.getCurrentUser().getUid()+"/prof_img").setValue(prof_img);
 
-                            databaseReference.child("user").child(mAuth.getCurrentUser().getUid()).child("profile_img").setValue(user);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

@@ -13,7 +13,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
+    <!-- 카메라 권한 -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.Camera"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -69,6 +71,7 @@
         <activity android:name=".fragments.FragmentMessageRaid"></activity>
         <activity android:name="kr.co.timecapsule.DetailMessageActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog"/>
+        <service android:name=".ServiceFlash.FlashService"/>
     </application>
 
 </manifest>
