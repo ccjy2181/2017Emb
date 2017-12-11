@@ -112,7 +112,7 @@ public class MyFirebaseConnector {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 BoardDTO boardDTO = dataSnapshot.getValue(BoardDTO.class);  // chatData를 가져오고
                 boardDTO.setKey(dataSnapshot.getKey());
-                boardDTO.setNickname("최성운");
+                boardDTO.setNickname("관리자");
                 item.add(item.size(), boardDTO);
                 System.out.println("board: "+boardDTO);
                 itemAdapter.notifyDataSetChanged();

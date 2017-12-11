@@ -59,16 +59,13 @@
         <Preference
             android:summary="개발자 정보를 확인합니다"
             android:title="개발자 정보" >
-            <intent
-                android:targetClass="whdghks913.tistory.examplepreferenceactivity.MadeByActivity"
-                android:targetPackage="whdghks913.tistory.examplepreferenceactivity" />
         </Preference>
         <Preference
             android:summary="개발자에게 메일을 보냅니다"
             android:title="메일 보내기" >
             <intent
                 android:action="android.intent.action.SENDTO"
-                android:data="mailto:whdghks913@naver.com" />
+                android:data="mailto:ccjy2181@naver.com" />
         </Preference>
     </PreferenceCategory>
 

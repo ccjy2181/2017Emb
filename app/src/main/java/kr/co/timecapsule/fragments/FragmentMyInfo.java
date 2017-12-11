@@ -60,7 +60,6 @@ import kr.co.timecapsule.IDListDbHelper;
 import kr.co.timecapsule.ImageDbHelper;
 import kr.co.timecapsule.MainActivity;
 import kr.co.timecapsule.R;
-import kr.co.timecapsule.SelectGalleryResolver;
 import kr.co.timecapsule.dto.UserDTO;
 import kr.co.timecapsule.firebase.MyFirebaseConnector;
 
